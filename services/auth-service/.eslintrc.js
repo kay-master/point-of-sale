@@ -2,11 +2,15 @@
 module.exports = {
 	parser: '@typescript-eslint/parser',
 	extends: [
-		'standard',
+		"standard",
 		'plugin:@typescript-eslint/recommended',
 		'prettier/@typescript-eslint',
 		'plugin:prettier/recommended',
 	],
+	parserOptions: {
+		ecmaVersion: 2020,
+		sourceType: 'module',
+	},
 	plugins: ['@typescript-eslint'],
 	rules: {
 		'@typescript-eslint/no-unused-vars': [

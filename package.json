@@ -10,6 +10,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@nx/eslint": "^19.5.3",
+    "@nx/jest": "^19.5.3",
+    "eslint": "^9.5.0",
+    "jest": "^29.7.0",
     "nx": "^19.5.3"
   }
 }
