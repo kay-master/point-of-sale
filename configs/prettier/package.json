@@ -1,0 +1,10 @@
+{
+  "name": "@pos/prettier",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Prettier configurations",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED"
+}
