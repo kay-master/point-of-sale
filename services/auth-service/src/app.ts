@@ -1,35 +1,41 @@
-import fastify from 'fastify';
-import 'dotenv/config';
+import express from 'express';
+import compression from 'compression';
 
-const { NODE_ENV } = process.env;
+import helmet from 'helmet';
+import routes from './routes';
+import cors from 'cors';
+import * as dotenv from 'dotenv';
+import {
+	NotFoundException,
+	errorMiddleware,
+	logger,
+	routeMiddleware,
+} from '@libs/middlewares';
 
-const envToLogger = {
-	development: {
-		transport: {
-			target: 'pino-pretty',
-			options: {
-				translateTime: 'HH:MM:ss',
-				ignore: 'pid,hostname',
-			},
-		},
-	},
-	production: true,
-	test: false,
-};
+dotenv.config();
 
-const environment = (NODE_ENV ?? 'development') as keyof typeof envToLogger;
+const app = express();
 
-const server = fastify({
-	logger: envToLogger[environment] ?? true,
+app.use(helmet());
+app.use(compression());
+app.use(express.json());
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+
+// Register logger
+app.use(logger('combined'));
+
+// Authentication and Authorization middleware
+app.use(routeMiddleware);
+
+// Config routers
+app.use(routes);
+
+app.use((_req, _res) => {
+	throw new NotFoundException('Not found', null);
 });
 
-// Register parent error handler
-server.setErrorHandler((error, _request, reply) => {
-	console.error(error);
+// Register the error handler middleware
+app.use(errorMiddleware);
 
-	reply
-		.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
-		.send(errorResponse('Something went wrong!', null));
-});
-
-export default server;
+export default app;

@@ -1,5 +1,6 @@
 packages:
-    - apps/*
-    - services/*
-    - libs/*
-    - configs/*
+    - 'apps/*'
+    - 'services/*'
+    - 'libs/*'
+    - 'configs/*'
+    - '!**/test/**'

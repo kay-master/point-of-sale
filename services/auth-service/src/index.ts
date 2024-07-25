@@ -1,20 +1,13 @@
 import app from './app';
 
-const { PORT } = process.env;
+const { PORT, NODE_ENV } = process.env;
 
-const port = parseInt(PORT || '3000', 10);
+const port = PORT || 3001;
+const env = NODE_ENV || 'development';
 
-const server = async () => {
-	try {
-		await app.listen({ port, host: '0.0.0.0' });
+const server = app.listen(port, () => {
+	console.log('App is running at http://localhost:%d in %s mode', port, env);
+	console.log('Press CTRL-C to stop\n');
+});
 
-		app.log.info('Press CTRL-C to stop\n');
-	} catch (err) {
-		app.log.error(err);
-		process.exit(1);
-	}
-};
-
-server();
-
-export default app;
+export default server;
