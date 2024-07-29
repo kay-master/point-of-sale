@@ -1,9 +1,8 @@
 # Stage 1: Base setup
-FROM node:20-alpine AS base
-WORKDIR /app
+FROM node:20-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN npm install -g pnpm
+RUN corepack enable
 
 # Stage 2: Install dependencies
 FROM base AS dependencies
@@ -17,19 +16,28 @@ RUN pnpm install --frozen-lockfile
 
 # Stage 3: Build
 FROM dependencies AS build
-COPY . .
-WORKDIR /app/services/auth-service
-RUN pnpm run build
+# COPY . .
+# WORKDIR /app/services/auth-service
+# RUN pnpm run build
+COPY . /usr/src/app
+WORKDIR /usr/src/app
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm run -r build
+RUN pnpm --filter=@pos/auth --prod deploy /prod
 
 # Stage 4: Prune non-production dependencies
 FROM base AS pruned
-COPY --from=build /app /app
-WORKDIR /app/services/auth-service
-RUN pnpm --filter=auth-service --prod deploy pruned
+COPY --from=build /prod /prod
+# WORKDIR /app/services/auth-service
+# RUN pnpm --filter=@pos/auth --prod deploy pruned
+WORKDIR /prod
+
+EXPOSE 3000
+CMD ["pnpm", "start"]
 
 # Stage 5: Production image
-FROM node:20-alpine AS production
-WORKDIR /app
+# FROM node:20-alpine AS production
+# WORKDIR /app
 # ENV PNPM_HOME="/pnpm"
 # ENV PATH="$PNPM_HOME:$PATH"
 # RUN npm install -g pnpm
@@ -40,8 +48,8 @@ WORKDIR /app
 # COPY --from=build /pnpm /pnpm
 # RUN pnpm install --prod
 
-ENV NODE_ENV=production
-COPY --from=pruned /app/services/auth-service/pruned /app
+# ENV NODE_ENV=production
+# COPY --from=pruned /app/pruned /app
 
-EXPOSE 3000
-CMD ["node", "dist/index.js"]
+# EXPOSE 3000
+# CMD ["node", "dist/index.js"]
