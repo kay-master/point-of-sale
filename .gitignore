@@ -132,8 +132,5 @@ dist
 # System Files
 .DS_Store
 
-# ignore prisma generated files from all services
-services/*/prisma/.prisma
-
 .nx
 docker/mysql

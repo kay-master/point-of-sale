@@ -2,10 +2,12 @@
   "name": "@pos/auth",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon .",
     "sq-cli": "npx sequelize-cli",
+    "build": "tsc",
+    "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +16,7 @@
   "dependencies": {
     "@libs/interfaces": "workspace:^",
     "@libs/middlewares": "workspace:^",
+    "@libs/service-register": "workspace:^",
     "@pos/eslint": "workspace:^",
     "@pos/prettier": "workspace:^",
     "@pos/tsconfig": "workspace:^",
