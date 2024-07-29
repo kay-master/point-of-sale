@@ -1,0 +1,19 @@
+{
+  "name": "@libs/api-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "ClarityHR Team",
+  "dependencies": {
+    "@libs/interfaces": "workspace:^",
+    "axios": "^1.7.2",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21"
+  }
+}

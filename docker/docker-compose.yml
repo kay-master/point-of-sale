@@ -1,0 +1,47 @@
+# To run the docker-compose.yml file, run the following command: docker-compose -f docker/docker-compose.yml up -d
+services:
+  mysql:
+    restart: always
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/:/var/lib/mysql
+      - ./config.cnf:/config/config.cnf
+    mem_limit: 512m
+    networks:
+      - mysqlnetwork
+    environment:
+      - MYSQL_ROOT_PASSWORD=pos-password
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=root 
+
+  mysql-admin:
+    restart: always
+    image: phpmyadmin/phpmyadmin
+    container_name: mysql-phpmyadmin
+    ports:
+      - "8001:80"
+    mem_limit: 512m
+    networks:
+      - mysqlnetwork
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+
+volumes:
+  mysql:
+    driver: local
+
+networks:
+  mysqlnetwork:
+    driver: bridge

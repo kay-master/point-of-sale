@@ -129,8 +129,11 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# System Files
+.DS_Store
+
 # ignore prisma generated files from all services
 services/*/prisma/.prisma
 
-.nx/cache
-.nx/workspace-data
+.nx
+docker/mysql

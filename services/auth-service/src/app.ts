@@ -4,15 +4,8 @@ import compression from 'compression';
 import helmet from 'helmet';
 import routes from './routes';
 import cors from 'cors';
-import * as dotenv from 'dotenv';
-import {
-	NotFoundException,
-	errorMiddleware,
-	logger,
-	routeMiddleware,
-} from '@libs/middlewares';
-
-dotenv.config();
+import { NotFoundException, errorMiddleware, logger } from '@libs/middlewares';
+import DB from './db';
 
 const app = express();
 
@@ -22,11 +15,14 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
+if (process.env.NODE_ENV === 'development') {
+	DB.sync().catch(() => {
+		console.error('Unable to connect to the database');
+	});
+}
+
 // Register logger
 app.use(logger('combined'));
-
-// Authentication and Authorization middleware
-app.use(routeMiddleware);
 
 // Config routers
 app.use(routes);

@@ -12,7 +12,7 @@ export class UnprocessableEntity extends HttpException {
 }
 
 export class UnauthorizedException extends HttpException {
-	constructor(message: string, errors: any) {
+	constructor(errors?: any, message?: string) {
 		super(
 			message || "Unauthorized access",
 			null,

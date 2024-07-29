@@ -1,33 +1,37 @@
 #!/bin/bash
 
-# Define the network name
-PUBLIC_NETWORK_NAME=external-proxy
-PRIVATE_NETWORK_NAME=internal-proxy
+# Define the docker-compose file location
+DOCKER_COMPOSE_FILE="docker/docker-compose.yml"
 
-# Check if the PUBLIC_NETWORK_NAME already exists
-if [ ! "$(docker network ls | grep $PUBLIC_NETWORK_NAME)" ]; then
-  echo "Creating Docker network: $PUBLIC_NETWORK_NAME"
-  docker network create $PUBLIC_NETWORK_NAME
+# Define MySQL container name
+MYSQL_CONTAINER_NAME="mysql"
+
+# Define path to MySQL configuration file
+MYSQL_CONFIG_FILE="/config/config.cnf"
+
+# Define databases to create
+DATABASES=("auth_db" "products_db" "orders_db")
+
+# Start the Docker containers
+echo "Starting Docker containers..."
+docker-compose -f $DOCKER_COMPOSE_FILE up -d
+
+# Wait for a few seconds to ensure MySQL is up and running
+echo "Waiting for MySQL container to start..."
+sleep 10
+
+# Check if MySQL container is running
+if [ "$(docker inspect -f '{{.State.Running}}' $MYSQL_CONTAINER_NAME)" == "true" ]; then
+  echo "MySQL container is running. Proceeding to create databases..."
+  
+  # Loop through the databases array and create each database
+  for DB in "${DATABASES[@]}"; do
+    echo "Creating database: $DB"
+    docker exec -i $MYSQL_CONTAINER_NAME mysql --defaults-extra-file=$MYSQL_CONFIG_FILE -e "CREATE DATABASE IF NOT EXISTS $DB;"
+  done
+
+  echo "All databases created successfully."
 else
-  echo "Docker network $PUBLIC_NETWORK_NAME already exists"
+  echo "MySQL container is not running. Exiting..."
+  exit 1
 fi
-
-# Check if the PRIVATE_NETWORK_NAME already exists
-if [ ! "$(docker network ls | grep $PRIVATE_NETWORK_NAME)" ]; then
-  echo "Creating Docker network: $PRIVATE_NETWORK_NAME"
-  docker network create $PRIVATE_NETWORK_NAME
-else
-  echo "Docker network $PRIVATE_NETWORK_NAME already exists"
-fi
-
-# Build the base image
-echo "Building base image clarityhr-base"
-docker build -f Dockerfile.base -t clarityhr-base .
-
-# Run Docker Compose
-echo "Running Docker Compose"
-docker-compose -f infrastructure/docker-compose-dev.yml up -d
-
-# Check the status of the services
-echo "Checking the status of the services"
-docker-compose -f infrastructure/docker-compose-dev.yml ps

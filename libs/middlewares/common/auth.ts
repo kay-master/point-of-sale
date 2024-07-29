@@ -1,9 +1,6 @@
-import { NotFoundException } from './../exceptions/not-found';
-import { UnauthorizedException } from './../exceptions/validation';
-import { NextFunction, Request, Response } from 'express';
-import * as jwt from 'jsonwebtoken';
-
-import { SessionToken } from '@libs/interfaces';
+import { NotFoundException } from "./../exceptions/not-found";
+import { UnauthorizedException } from "./../exceptions/validation";
+import { NextFunction, Request, Response } from "express";
 
 /**
  * Inter-service authentication middleware.
@@ -13,80 +10,43 @@ import { SessionToken } from '@libs/interfaces';
 export const authMiddleware = (
 	req: Request,
 	_res: Response,
-	next: NextFunction
+	next: NextFunction,
 ) => {
 	// Extract bearer token from the request headers
-	const token = (req.headers['service-token'] as string | undefined)?.split(
-		' '
+	const token = (req.headers["service-token"] as string | undefined)?.split(
+		" ",
 	)[1];
 
 	const SERVICE_COMMUNICATION_TOKEN =
-		process.env.SERVICE_COMMUNICATION_TOKEN || '';
+		process.env.SERVICE_COMMUNICATION_TOKEN || "";
 
 	if (!SERVICE_COMMUNICATION_TOKEN) {
-		throw new NotFoundException(
-			'Service communication token not found!',
-			null
-		);
+		throw new NotFoundException("Service communication token not found!", null);
 	}
 
 	try {
 		// Verify the token
 		if (!token || token !== SERVICE_COMMUNICATION_TOKEN) {
-			return next(new UnauthorizedException('Unauthorized access', null));
+			return next(new UnauthorizedException());
 		}
 
 		next();
 	} catch (error) {
-		console.error('authMiddleware:', error);
+		console.error("authMiddleware:", error);
 
-		next(new UnauthorizedException('Unauthorized access', null));
-	}
-};
-
-export const signToken = (data: SessionToken, expiresIn = '10d') => {
-	const secret = process.env.TOKEN_SECRET;
-
-	if (!secret) {
-		throw new NotFoundException('Token secret not found!', null);
-	}
-
-	return jwt.sign(data, secret, {
-		expiresIn,
-	});
-};
-
-export const verifyToken = (token: string) => {
-	const secret = process.env.JWT_SECRET;
-
-	if (!secret) {
-		throw new NotFoundException('Token secret not found!', null);
-	}
-
-	if (!token) {
-		throw new UnauthorizedException('Unauthorized access', null);
-	}
-
-	try {
-		return jwt.verify(token, secret) as SessionToken;
-	} catch (error) {
-		console.error('verifyToken:', error);
-
-		throw new UnauthorizedException('Unauthorized access!', {
-			error: 'Invalid/Expired token',
-		});
+		next(new UnauthorizedException());
 	}
 };
 
 export const extractUser = (
 	req: Request,
 	_res: Response,
-	next: NextFunction
+	next: NextFunction,
 ) => {
-	const userId = req.headers['x-account-id'];
+	const userId = req.headers["x-account-id"];
 
 	if (!userId) {
-		next(new UnauthorizedException('Unauthorized access', null));
+		next(new UnauthorizedException());
 	}
 
 	// @ts-ignore
@@ -100,9 +60,9 @@ export const extractUser = (
 export const routeMiddleware = (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ) => {
-	if (req.url.includes('/internal')) {
+	if (req.url.includes("/internal")) {
 		return authMiddleware(req, res, next);
 	}
 
