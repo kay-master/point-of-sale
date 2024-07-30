@@ -8,10 +8,17 @@ Generate a secure token for service-to-service communication. To generate a secu
 ./scripts/createServiceToken.sh
 ```
 
+# Database creation and migrations
+
+Run following script to create databases:
+
+```bash
+./script/run-database.sh
+```
+
 # Infrastructure
 
 - **Consul**: Provides service discovery. It keeps track of which services are available and their health status.
-- **Registrator**: Automatically registers and deregisters services with Consul based on the state of the Docker containers.
 - **nginx-proxy**: Acts as the gateway. It uses environment variables to configure itself dynamically to route traffic to the appropriate services.
 
 To start microservices:
