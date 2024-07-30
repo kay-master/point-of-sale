@@ -13,7 +13,7 @@ export const errorHandler = (method: Function) => {
 			let exception: HttpException;
 
 			console.group("Error Handler");
-			console.error(error.stack ? error.stack : error);
+			console.error(error);
 			console.groupEnd();
 
 			if (error instanceof HttpException) {

@@ -2,6 +2,7 @@ import { HTTP_STATUS_CODES, successResponse } from '@libs/middlewares';
 import { Request, Response } from 'express';
 import {
 	createProductService,
+	deleteProductService,
 	getProductsService,
 	updateProductService,
 } from '../services/product.service';
@@ -33,8 +34,11 @@ export const updateProduct = async (req: Request, res: Response) => {
 	);
 };
 
-export const deleteProduct = async (_req: Request, res: Response) => {
+export const deleteProduct = async (req: Request, res: Response) => {
 	res.status(HTTP_STATUS_CODES.OK).json(
-		successResponse(null, 'Product deleted successfully')
+		successResponse(
+			await deleteProductService(parseInt(req.params.id)),
+			'Product deleted successfully'
+		)
 	);
 };

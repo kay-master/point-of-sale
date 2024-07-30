@@ -7,7 +7,7 @@ import {
 } from '../schema/product.schema';
 
 const constructProduct = (product: Product) => ({
-	id: product.id,
+	productId: product.productId,
 	name: product.name,
 	price: product.price,
 	quantity: product.quantity,
@@ -42,4 +42,33 @@ export const updateProductService = async (
 	}
 
 	return constructProduct(await product.update(data));
+};
+
+/**
+ * Deleting a product
+ *
+ * A product that has upsell products cannot be deleted, the upsell products must be deleted first
+ */
+export const deleteProductService = async (productId: number) => {
+	const product = await Product.scope('withUpsells').findByPk(productId);
+
+	if (!product) {
+		throw new NotFoundException('Product not found', null);
+	}
+
+	// Check if the product has upsell products
+	if (product.upsellProducts.length > 0) {
+		throw new UnprocessableEntity(
+			'Product has upsell products, delete upsell products first',
+			{
+				upsellProducts: product.upsellProducts.map(
+					(upsell) => upsell.upsellProductId
+				),
+			}
+		);
+	}
+
+	await product.destroy();
+
+	return product;
 };

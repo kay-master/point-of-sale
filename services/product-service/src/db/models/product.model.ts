@@ -1,13 +1,17 @@
 import {
+	AfterDestroy,
 	AutoIncrement,
 	Column,
 	CreatedAt,
 	DataType,
+	HasMany,
 	Model,
 	PrimaryKey,
+	Scopes,
 	Table,
 	UpdatedAt,
 } from 'sequelize-typescript';
+import { UpsellProduct } from './upsellProduct.model';
 
 export interface ProductCreationAttributes {
 	name: string;
@@ -16,6 +20,22 @@ export interface ProductCreationAttributes {
 	description: string;
 }
 
+@Scopes(() => ({
+	withUpsells: {
+		include: [
+			{
+				model: UpsellProduct,
+				as: 'upsellProducts',
+				include: [
+					{
+						model: Product,
+						as: 'upsellProduct',
+					},
+				],
+			},
+		],
+	},
+}))
 @Table({ tableName: 'products' })
 export class Product extends Model<Product, ProductCreationAttributes> {
 	@AutoIncrement
@@ -23,8 +43,9 @@ export class Product extends Model<Product, ProductCreationAttributes> {
 	@Column({
 		type: DataType.BIGINT,
 		allowNull: false,
+		field: 'id',
 	})
-	id!: number;
+	productId!: number;
 
 	@Column({
 		allowNull: false,
@@ -65,4 +86,15 @@ export class Product extends Model<Product, ProductCreationAttributes> {
 		field: 'updated_at',
 	})
 	updatedAt!: Date;
+
+	@HasMany(() => UpsellProduct, 'productId')
+	upsellProducts!: UpsellProduct[];
+
+	@HasMany(() => UpsellProduct, 'upsellProductId')
+	relatedToUpsellProducts!: UpsellProduct[];
+
+	@AfterDestroy
+	static logAfterDestroy(instance: Product) {
+		console.log('Product deleted successfully', instance.productId);
+	}
 }
