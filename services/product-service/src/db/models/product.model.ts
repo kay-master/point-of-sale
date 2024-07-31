@@ -18,6 +18,7 @@ export interface ProductCreationAttributes {
 	price: number;
 	quantity: number;
 	description: string;
+	sku: string;
 }
 
 @Scopes(() => ({
@@ -51,6 +52,12 @@ export class Product extends Model<Product, ProductCreationAttributes> {
 		allowNull: false,
 	})
 	name!: string;
+
+	@Column({
+		allowNull: false,
+		unique: true,
+	})
+	sku!: string;
 
 	@Column({
 		type: DataType.FLOAT,

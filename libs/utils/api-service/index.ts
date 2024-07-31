@@ -74,14 +74,14 @@ class ApiService {
 			const customHeaders = {
 				...headers,
 				"x-account-id": req.headers["x-account-id"],
-				"x-user-role": req.headers["x-user-role"],
 				"x-user-service": req.headers["x-user-service"] || undefined,
 			} as unknown as AxiosRequestHeaders;
 
 			const response = await axiosInstance<ResponseData<Response>>({
 				method,
-				url,
+				url: axiosInstance.defaults.baseURL + url,
 				data: payload,
+				params: req.query,
 				headers: customHeaders,
 			});
 

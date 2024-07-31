@@ -7,10 +7,10 @@ import {
 	updateProductService,
 } from '../services/product.service';
 
-export const getProducts = async (_req: Request, res: Response) => {
+export const getProducts = async (req: Request, res: Response) => {
 	res.status(HTTP_STATUS_CODES.OK).json(
 		successResponse(
-			await getProductsService(),
+			await getProductsService(req.query.products as string),
 			'Products retrieved successfully'
 		)
 	);
