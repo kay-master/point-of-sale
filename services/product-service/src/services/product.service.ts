@@ -53,10 +53,16 @@ const fetchProductWithIds = async (productIds: string) => {
 		},
 	});
 
-	if (products.length !== ids.length) {
-		const fetchedIds = products.map((product) => product.productId);
+	// Map the fetched products by their ID
+	const productMap = new Map(
+		products.map((product) => [product.productId, product])
+	);
 
-		const missingIds = ids.filter((id) => !fetchedIds.includes(id));
+	// Check if all provided IDs have corresponding products
+	const fetchedIds = products.map((product) => product.productId);
+	const missingIds = ids.filter((id) => !fetchedIds.includes(id));
+
+	if (missingIds.length > 0) {
 		throw new BadRequestException(
 			`Products with the following IDs do not exist: ${missingIds.join(', ')}`,
 			{
@@ -65,7 +71,12 @@ const fetchProductWithIds = async (productIds: string) => {
 		);
 	}
 
-	return products.map((product) => constructProduct(product));
+	// Duplicate products in the productList based on the duplicates in the ids array
+	const productList = ids
+		.map((id) => productMap.get(id))
+		.filter(Boolean) as Product[];
+
+	return productList.map((product) => constructProduct(product));
 };
 
 export const getProductsService = async (productIds?: string) => {

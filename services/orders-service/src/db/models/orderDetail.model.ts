@@ -86,6 +86,7 @@ export class OrderDetail extends Model<
 	quantity!: number;
 
 	@Column({
+		type: DataType.FLOAT,
 		allowNull: false,
 		field: 'total_price',
 	})

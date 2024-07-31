@@ -42,6 +42,7 @@ export class Order extends Model<Order, OrderCreationAttributes> {
 
 	@Column({
 		allowNull: false,
+		type: DataType.FLOAT,
 		field: 'total_amount',
 	})
 	totalAmount!: number;

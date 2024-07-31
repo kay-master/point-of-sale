@@ -14,14 +14,14 @@ module.exports = {
 					updated_at: new Date(),
 				},
 				{
-					total_amount: 200.0,
+					total_amount: 200.18,
 					user_id: 2,
 					status: 'processing',
 					created_at: new Date(),
 					updated_at: new Date(),
 				},
 				{
-					total_amount: 300.0,
+					total_amount: 300.49,
 					user_id: 3,
 					status: 'complete',
 					created_at: new Date(),

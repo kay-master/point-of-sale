@@ -20,7 +20,7 @@ import {
 const getProducts = async (data: OrderCreationType, req: Request) => {
 	const productIds = data.items.map((item) => item.productId);
 	const upsellProductIds =
-		data.upsellItems?.map((item) => item.productId) || [];
+		data.upsellItems?.map((item) => item.upsellProductId) || [];
 
 	req.query = {
 		products: JSON.stringify([...productIds, ...upsellProductIds]),
@@ -66,21 +66,21 @@ export const createOrderService = async (req: Request) => {
 
 		const items = await getProducts(orderData, req);
 
-		const orderDetailsData: OrderDetailCreationAttributes[] = [];
+		const combinedItems: Record<string, OrderDetailCreationAttributes> = {};
 
 		const insufficientProducts: Product[] = [];
 
+		// Logic below is to combine the order items and upsell items into a single object
+
 		// Add order details to the order
-		for (const detail of items) {
+		for (let i = 0; i < items.length; i++) {
+			const detail = items[i];
 			const findProductQty = orderData.items.find(
 				(item) => item.productId === detail.productId
 			);
 
 			if (!findProductQty) {
-				throw new BadRequestException(
-					'Product quantity not found',
-					null
-				);
+				continue;
 			}
 
 			// Check if the quantity of the product is sufficient
@@ -96,16 +96,57 @@ export const createOrderService = async (req: Request) => {
 			const itemTotal = detail.price * findProductQty.quantity;
 			totalAmount += itemTotal;
 
-			orderDetailsData.push({
-				orderId: order.id,
-				productId: detail.productId,
-				productName: detail.name,
-				productPrice: detail.price,
-				productDescription: detail.description,
-				productSKU: detail.sku,
-				quantity: findProductQty.quantity,
-				totalPrice: itemTotal,
-			});
+			if (combinedItems[detail.sku]) {
+				combinedItems[detail.sku].quantity += findProductQty.quantity;
+				combinedItems[detail.sku].totalPrice += itemTotal;
+			} else {
+				combinedItems[detail.sku] = {
+					orderId: order.orderId,
+					productId: detail.productId,
+					productName: detail.name,
+					productPrice: detail.price,
+					productDescription: detail.description,
+					productSKU: detail.sku,
+					quantity: findProductQty.quantity,
+					totalPrice: itemTotal,
+				};
+			}
+
+			// Remove the processed item from the array
+			items.splice(i, 1);
+		}
+
+		// Process upsell items
+		if (orderData.upsellItems) {
+			for (const detail of items) {
+				const findProductQty = orderData.upsellItems.find(
+					(item) => item.upsellProductId === detail.productId
+				);
+
+				if (!findProductQty) {
+					continue;
+				}
+
+				const itemTotal = detail.price * findProductQty.quantity;
+				totalAmount += itemTotal;
+
+				if (combinedItems[detail.sku]) {
+					combinedItems[detail.sku].quantity +=
+						findProductQty.quantity;
+					combinedItems[detail.sku].totalPrice += itemTotal;
+				} else {
+					combinedItems[detail.sku] = {
+						orderId: order.orderId,
+						productId: detail.productId,
+						productName: detail.name,
+						productPrice: detail.price,
+						productDescription: detail.description,
+						productSKU: detail.sku,
+						quantity: findProductQty.quantity,
+						totalPrice: itemTotal,
+					};
+				}
+			}
 		}
 
 		// Check if there are insufficient products
@@ -120,7 +161,16 @@ export const createOrderService = async (req: Request) => {
 			);
 		}
 
-		await OrderDetail.bulkCreate(orderDetailsData, {
+		const orderDetails = Object.values(combinedItems);
+
+		if (orderDetails.length === 0) {
+			throw new BadRequestException(
+				'No valid products found in the order',
+				null
+			);
+		}
+
+		await OrderDetail.bulkCreate(orderDetails, {
 			transaction,
 		});
 
@@ -136,7 +186,7 @@ export const createOrderService = async (req: Request) => {
 		// 	orderData.items
 		// );
 
-		// await transaction.commit();
+		await transaction.commit();
 	} catch (error) {
 		console.error(error);
 
