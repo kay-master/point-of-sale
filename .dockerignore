@@ -4,5 +4,3 @@ node_modules
 *.md
 dist
 .vscode
-.pnpm-store
-**/node_modules

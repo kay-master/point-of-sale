@@ -1,7 +1,5 @@
 import axios from "axios";
 
-const CONSUL_URL = "http://localhost:8500/v1/agent/service";
-
 export interface ServiceRegistryPayload {
 	ID: string;
 	Name: string;
@@ -31,6 +29,7 @@ export class ServiceRegistry {
 		Port: 0,
 		Tags: [],
 	};
+	private CONSUL_URL = "";
 
 	constructor(data: ServiceRegistryPayload) {
 		this.service.ID = data.ID;
@@ -39,12 +38,14 @@ export class ServiceRegistry {
 		this.service.Port = data.Port;
 		this.service.Tags = data.Tags;
 		// this.service.Check = data.Check;
+
+		this.CONSUL_URL = `http://${process.env.CONSUL_ADDRESS || "localhost:8500"}/v1/agent/service`;
 	}
 
 	// Function to register the service with Consul
 	async register() {
 		try {
-			await axios.put(`${CONSUL_URL}/register`, this.service);
+			await axios.put(`${this.CONSUL_URL}/register`, this.service);
 
 			console.log("Service registered with Consul");
 		} catch (error) {
@@ -55,7 +56,7 @@ export class ServiceRegistry {
 	// Function to deregister the service
 	async deregister() {
 		try {
-			await axios.put(`${CONSUL_URL}/deregister/${this.service.ID}`);
+			await axios.put(`${this.CONSUL_URL}/deregister/${this.service.ID}`);
 			console.log("\nService deregistered from Consul");
 		} catch (error) {
 			console.error("Error de-registering service from Consul:", error);

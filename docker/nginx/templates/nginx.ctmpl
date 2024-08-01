@@ -4,22 +4,13 @@ resolver 127.0.0.11 valid=30s;
 {{ range services }}
 {{ $name := .Name }}
 {{ range service .Name }}
-{{ if not (eq .Address "172.20.0.2") }}
+{{ if ne $name "consul" }}
 upstream {{ .Address }} {
     server host.docker.internal:{{ .Port }};
 }
-{{ end }}
-{{ end }}
-{{ end }}
-
 server {
     listen 80;
-    server_name localhost;
-    
-    {{ range services }}
-    {{ $name := .Name }}
-    {{ range service .Name }}
-    {{ if not (eq .Address "172.20.0.2") }}
+    server_name {{ $name }};
 
     location /{{ .Address }} {
         proxy_pass http://{{ .Address }};
@@ -30,10 +21,11 @@ server {
         proxy_cache_bypass $http_upgrade;
         proxy_pass_request_headers on;
     }
-    {{ end }}
-    {{ end }}
-    {{ end }}
 }
+{{ end }}
+{{ end }}
+{{ end }}
+
 
 
 

@@ -2,7 +2,9 @@
   "name": "@libs/service-register",
   "version": "1.0.0",
   "description": "",
+  "main": "dist/index.js",
   "scripts": {
+    "build": "rm -fr dist && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,6 +14,7 @@
     "axios": "^1.7.2"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.2"
   }
 }

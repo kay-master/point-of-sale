@@ -2,18 +2,20 @@
   "name": "@libs/api-service",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "scripts": {
+    "build": "rm -fr dist && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "ClarityHR Team",
+  "author": "@kay-master",
   "dependencies": {
     "@libs/interfaces": "workspace:^",
     "axios": "^1.7.2",
     "express": "^4.19.2"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21"
+    "@types/express": "^4.17.21",
+    "typescript": "^5.5.2"
   }
 }

@@ -55,6 +55,7 @@ services:
 
   nginx:
     image: nginx:latest
+    restart: always
     container_name: nginx-server
     ports:
       - "80:80"
@@ -68,6 +69,7 @@ services:
     command: ["nginx", "-g", "daemon off;"]
 
   consul-template:
+    restart: always
     build:
       context: .
       dockerfile: ./consul-template/Dockerfile
@@ -97,19 +99,18 @@ services:
   #   volumes:
   #     - /var/run/docker.sock:/tmp/docker.sock
 
-  # auth-service:
-  #   build:
-  #     context: ..
-  #     dockerfile: ./services/auth-service/docker/Dockerfile
-  #   environment:
-  #     - VIRTUAL_HOST=auth.local
-  #     - VIRTUAL_PORT=4001
-  #     # - CONSUL_SERVICE_ID=auth-service
-  #     - CONSUL_ADDRESS=consul:8500
-  #     # - CONSUL_NAME=auth-service
-  #     # - CONSUL_TAGS=urlprefix-/auth
-  #   ports:
-  #     - "4001:4001"
+  auth-service:
+    build:
+      context: ..
+      dockerfile: ./services/auth-service/docker/Dockerfile
+    environment:
+      - DB_HOST=mysql
+      - CONSUL_ADDRESS=consul:8500
+    ports:
+      - "4001:4001"
+    networks:
+      - consul-network
+      - mysqlnetwork
 
 volumes:
   mysql:

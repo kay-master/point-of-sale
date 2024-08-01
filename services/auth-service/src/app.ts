@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use(logger('combined'));
 
 // Config routers
-app.use(routes);
+app.use('/auth', routes);
 
 app.use((_req, _res) => {
 	throw new NotFoundException('Not found', null);
