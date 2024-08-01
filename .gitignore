@@ -134,3 +134,4 @@ dist
 
 .nx
 docker/mysql
+/docker/consul/data

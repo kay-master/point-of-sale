@@ -40,6 +40,12 @@ export async function serviceDiscovery() {
 		Address: process.env.SERVICE_ADDRESS || "",
 		Port: parseInt(process.env.PORT || "", 10),
 		Tags: [`urlprefix-/${process.env.SERVICE_PREFIX}`],
+		Check: {
+			HTTP: `http://${process.env.SERVICE_ADDRESS}:${process.env.PORT}/health`,
+			Interval: "10s",
+			Method: "GET",
+			Name: process.env.SERVICE_NAME + "-health",
+		},
 	};
 
 	const serviceRegistry = new ServiceRegistry(service);

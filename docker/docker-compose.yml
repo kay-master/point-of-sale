@@ -1,4 +1,4 @@
-# To run this docker compose file, run the following command: docker-compose -f docker/docker-compose.yml up -d
+# To run this docker compose file, run the following command: docker-compose -f docker/docker-compose.yml up --build -d
 
 services:
   mysql:
@@ -41,19 +41,51 @@ services:
 
   consul:
     restart: always
+    container_name: consul
     image: hashicorp/consul:latest
     ports:
       - "8500:8500"
+      - "8600:8600/udp"
+    volumes:
+      - ./consul/config:/consul/config
+      - ./consul/data:/consul/data
+    networks:
+      - consul-network
     command: agent -dev -client=0.0.0.0
 
   nginx:
-    image: nginx-consul-template
+    image: nginx:latest
+    container_name: nginx-server
     ports:
       - "80:80"
-    # volumes:
-    # - ./nginx.conf:/etc/nginx/nginx.conf
+    volumes:
+      - ./nginx/templates:/etc/consul-template/templates
+      - ./nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - consul
+    networks:
+      - consul-network
+    command: ["nginx", "-g", "daemon off;"]
+
+  consul-template:
+    build:
+      context: .
+      dockerfile: ./consul-template/Dockerfile
+    container_name: consul-template
+    environment:
+      CONSUL_HTTP_ADDR: "http://consul:8500"
+    volumes:
+      - ./consul-template/config:/etc/consul-template
+      - ./nginx/templates:/etc/consul-template/templates
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - consul-network
+    depends_on:
+      - consul
+      - nginx
+    command:
+      ["consul-template", "-config", "/etc/consul-template/consul-template.hcl"]
 
   # Removing registrator for now as it is using Docker Image manifest that is deprecated
   # registrator:
@@ -72,10 +104,10 @@ services:
   #   environment:
   #     - VIRTUAL_HOST=auth.local
   #     - VIRTUAL_PORT=4001
-  #     - CONSUL_SERVICE_ID=auth-service
+  #     # - CONSUL_SERVICE_ID=auth-service
   #     - CONSUL_ADDRESS=consul:8500
-  #     - CONSUL_NAME=auth-service
-  #     - CONSUL_TAGS=urlprefix-/auth
+  #     # - CONSUL_NAME=auth-service
+  #     # - CONSUL_TAGS=urlprefix-/auth
   #   ports:
   #     - "4001:4001"
 
@@ -85,4 +117,6 @@ volumes:
 
 networks:
   mysqlnetwork:
+    driver: bridge
+  consul-network:
     driver: bridge

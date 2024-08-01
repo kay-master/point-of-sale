@@ -15,6 +15,12 @@ export interface ServiceRegistryPayload {
 	Port: number;
 	/** Example: "urlprefix-/auth" */
 	Tags: string[];
+	Check?: {
+		HTTP: string;
+		Method: "GET" | "POST" | "PUT";
+		Interval: string;
+		Name: string;
+	};
 }
 
 export class ServiceRegistry {
@@ -32,6 +38,7 @@ export class ServiceRegistry {
 		this.service.Address = data.Address;
 		this.service.Port = data.Port;
 		this.service.Tags = data.Tags;
+		// this.service.Check = data.Check;
 	}
 
 	// Function to register the service with Consul
