@@ -133,7 +133,7 @@ dist
 .DS_Store
 
 .nx
-docker/mysql
+docker/mysql/data
 /docker/consul/data
 
 /docker/nginx/conf.data/default*

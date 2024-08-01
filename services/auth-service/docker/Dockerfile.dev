@@ -1,0 +1,29 @@
+# Stage 1: Base setup
+FROM node:20-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+# Stage 2: Install dependencies
+FROM base AS development
+# Copy the source code
+COPY . /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy workspace configuration and lockfile to leverage Docker cache
+COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
+COPY .npmrc ./
+# COPY nodemon.json ./
+COPY nx.json ./
+
+# Install all dependencies (including dev dependencies)
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
+
+# Ensure nodemon is installed
+# RUN pnpm add -g nodemon
+
+# Expose the development port
+EXPOSE 4001
+
+# Command to run the service in development mode
+CMD ["pnpm", "nx", "dev", "@pos/auth"]

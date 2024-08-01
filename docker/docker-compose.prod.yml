@@ -1,0 +1,23 @@
+# To run this docker compose file, run the following command: docker-compose -f docker/prod/docker-compose.yml up --build -d
+
+services:
+  auth-service:
+    container_name: auth-service
+    build:
+      context: ..
+      dockerfile: ./services/auth-service/docker/Dockerfile
+    environment:
+      - DB_HOST=mysql
+      - CONSUL_ADDRESS=consul:8500
+      - PORT=4001
+    ports:
+      - "4001:4001"
+    networks:
+      - consulnetwork
+      - mysqlnetwork
+
+networks:
+  mysqlnetwork:
+    external: true
+  consulnetwork:
+    external: true

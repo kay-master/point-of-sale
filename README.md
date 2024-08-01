@@ -21,14 +21,14 @@ Run following script to create databases:
 - **Consul**: Provides service discovery. It keeps track of which services are available and their health status.
 - **nginx-proxy**: Acts as the gateway. It uses environment variables to configure itself dynamically to route traffic to the appropriate services.
 
-To start microservices:
+To start the servers:
+
+Example:
+
+- `docker/runDocker.sh prod up --build -d`
+- `docker/runDocker.sh dev up -d`
+- `docker/runDocker.sh dev down`
 
 ```bash
-docker-compose -f docker/microservices/docker-compose.yml up -d
-```
-
-To your infrastructure services:
-
-```bash
-docker-compose -f docker/infrastructure/docker-compose.yml up -d
+docker/runDocker.sh prod up -d
 ```
