@@ -60,7 +60,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx/templates:/etc/consul-template/templates
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/conf.data:/etc/nginx/conf.d
     depends_on:
       - consul
     networks:
@@ -77,7 +77,7 @@ services:
     volumes:
       - ./consul-template/config:/etc/consul-template
       - ./nginx/templates:/etc/consul-template/templates
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/conf.data:/etc/nginx/conf.d
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - consul-network

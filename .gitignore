@@ -136,4 +136,4 @@ dist
 docker/mysql
 /docker/consul/data
 
-/docker/nginx/conf.d
+/docker/nginx/conf.data/default*
