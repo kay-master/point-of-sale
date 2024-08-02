@@ -1,26 +1,26 @@
 # To run this docker compose file, run the following command: docker-compose -f docker/dev/docker-compose.yml up --build -d
 
 services:
-  # auth-service:
-  #   build:
-  #     context: ..
-  #     dockerfile: ./services/auth-service/docker/Dockerfile.dev
-  #   container_name: auth-service-dev
-  #   restart: always
-  #   environment:
-  #     - DB_HOST=mysql
-  #     - CONSUL_ADDRESS=consul:8500
-  #     - NODE_ENV=development
-  #     - PORT=4001
-  #   ports:
-  #     - "4001:4001"
-  #   networks:
-  #     - consulnetwork
-  #     - mysqlnetwork
-  #   volumes:
-  #     - ../services/auth-service:/usr/src/app/services/auth-service
-  #     - ../libs:/usr/src/app/libs
-  #     - service-node-modules:/usr/src/app/node_modules
+  auth-service:
+    build:
+      context: ..
+      dockerfile: ./services/auth-service/docker/Dockerfile.dev
+    container_name: auth-service-dev
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - CONSUL_ADDRESS=consul:8500
+      - NODE_ENV=development
+      - PORT=4001
+    ports:
+      - "4001:4001"
+    networks:
+      - consulnetwork
+      - mysqlnetwork
+    volumes:
+      - ../services/auth-service:/usr/src/app/services/auth-service
+      - ../libs:/usr/src/app/libs
+      - service-node-modules:/usr/src/app/node_modules
 
   product-service:
     build:
