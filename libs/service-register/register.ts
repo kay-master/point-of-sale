@@ -42,7 +42,9 @@ export class ServiceRegistry {
 		this.CONSUL_URL = `http://${process.env.CONSUL_ADDRESS || "localhost:8500"}/v1/agent/service`;
 	}
 
-	// Function to register the service with Consul
+	/**
+	 * Register the service with Consul
+	 */
 	async register() {
 		try {
 			await axios.put(`${this.CONSUL_URL}/register`, this.service);
@@ -53,7 +55,9 @@ export class ServiceRegistry {
 		}
 	}
 
-	// Function to deregister the service
+	/**
+	 * Deregister the service from Consul
+	 */
 	async deregister() {
 		try {
 			await axios.put(`${this.CONSUL_URL}/deregister/${this.service.ID}`);

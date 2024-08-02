@@ -1,30 +1,73 @@
 # To run this docker compose file, run the following command: docker-compose -f docker/dev/docker-compose.yml up --build -d
 
 services:
-  auth-service:
+  # auth-service:
+  #   build:
+  #     context: ..
+  #     dockerfile: ./services/auth-service/docker/Dockerfile.dev
+  #   container_name: auth-service-dev
+  #   restart: always
+  #   environment:
+  #     - DB_HOST=mysql
+  #     - CONSUL_ADDRESS=consul:8500
+  #     - NODE_ENV=development
+  #     - PORT=4001
+  #   ports:
+  #     - "4001:4001"
+  #   networks:
+  #     - consulnetwork
+  #     - mysqlnetwork
+  #   volumes:
+  #     - ../services/auth-service:/usr/src/app/services/auth-service
+  #     - ../libs:/usr/src/app/libs
+  #     - service-node-modules:/usr/src/app/node_modules
+
+  product-service:
     build:
       context: ..
-      dockerfile: ./services/auth-service/docker/Dockerfile.dev
-    container_name: auth-service-dev
+      dockerfile: ./services/product-service/docker/Dockerfile.dev
+    container_name: product-service-dev
+    restart: always
     environment:
       - DB_HOST=mysql
       - CONSUL_ADDRESS=consul:8500
       - NODE_ENV=development
-      - PORT=4001
+      - PORT=4002
     ports:
-      - "4001:4001"
+      - "4002:4002"
     networks:
       - consulnetwork
       - mysqlnetwork
     volumes:
-      - ./services/auth-service:/usr/src/app
+      - ../services/product-service:/usr/src/app/services/product-service
+      - ../libs:/usr/src/app/libs
+      - service-node-modules:/usr/src/app/node_modules
+
+  orders-service:
+    build:
+      context: ..
+      dockerfile: ./services/orders-service/docker/Dockerfile.dev
+    container_name: orders-service-dev
+    restart: always
+    environment:
+      - DB_HOST=mysql
+      - CONSUL_ADDRESS=consul:8500
+      - NODE_ENV=development
+      - PORT=4003
+    ports:
+      - "4003:4003"
+    networks:
+      - consulnetwork
+      - mysqlnetwork
+    volumes:
+      - ../services/orders-service:/usr/src/app/services/orders-service
+      - ../libs:/usr/src/app/libs
       - service-node-modules:/usr/src/app/node_modules
 
 volumes:
   mysql:
     driver: local
   service-node-modules:
-    driver: local
 
 networks:
   mysqlnetwork:

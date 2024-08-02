@@ -1,30 +1,34 @@
+{{range services}} {{$name := .Name}} {{ if ne $name "consul" }}
+upstream {{ $name }} {
+  zone upstream-{{$name}} 64k;
+  {{range service .Name}}server host.docker.internal:{{ .Port }} max_fails=3 fail_timeout=60 weight=1;
+  {{else}}server 127.0.0.1:65535; # force a 502{{end}}
+} 
+{{end}} {{end}}
 
-resolver 127.0.0.11 valid=30s;
-
-{{ range services }}
-{{ $name := .Name }}
-{{ range service .Name }}
-{{ if ne $name "consul" }}
-upstream {{ .Address }} {
-    server host.docker.internal:{{ .Port }};
-}
 server {
-    listen 80;
-    server_name {{ $name }};
+    listen 80 default_server;
 
-    location /{{ .Address }} {
-        proxy_pass http://{{ .Address }};
+    location / {
+        root /usr/share/nginx/html/;
+        index index.html;
+    }
+
+    location /stub_status {
+        stub_status;
+    }
+    {{range services}} {{$name := .Name}} {{ if ne $name "consul" }}
+    location /{{ $name }} {
+        proxy_pass http://{{ $name }};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_cache_bypass $http_upgrade;
         proxy_pass_request_headers on;
-    }
+    } 
+    {{end}} {{end}}
 }
-{{ end }}
-{{ end }}
-{{ end }}
 
 
 

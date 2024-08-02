@@ -6,13 +6,17 @@
       "options": {
         "cacheableOperations": [
           "build"
-        ]
+        ],
+        "parallel": 3
       }
     }
   },
   "namedInputs": {
     "noMD": [
       "!{projectRoot}/**/*.md"
+    ],
+    "libsOnly": [
+      "{workspaceRoot}/libs/**/*"
     ]
   },
   "targetDefaults": {
@@ -26,7 +30,12 @@
     },
     "build": {
       "inputs": [
-        "noMD"
+        "noMD",
+        "libsOnly",
+        "^libsOnly"
+      ],
+      "outputs": [
+        "{projectRoot}/dist"
       ],
       "dependsOn": [
         "^build"

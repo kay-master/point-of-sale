@@ -19,7 +19,7 @@ COPY nx.json ./
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 
 # Expose the development port
-EXPOSE 4001
+EXPOSE 4003
 
 # Command to run the service in development mode
-CMD ["pnpm", "nx", "dev", "@pos/auth"]
+CMD ["pnpm", "nx", "dev", "@pos/orders"]

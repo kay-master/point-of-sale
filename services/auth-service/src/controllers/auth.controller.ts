@@ -6,7 +6,7 @@ export const register = async (req: Request, res: Response) => {
 	res.status(HTTP_STATUS_CODES.CREATED).json(
 		successResponse(
 			await registerService(req.body),
-			'User registered successfully'
+			'Registered successfully'
 		)
 	);
 };
@@ -17,7 +17,7 @@ export const login = async (req: Request, res: Response) => {
 	res.status(HTTP_STATUS_CODES.OK).json(
 		successResponse(
 			await loginService({ email, password }),
-			'User logged in successfully'
+			'Logged in successfully'
 		)
 	);
 };
