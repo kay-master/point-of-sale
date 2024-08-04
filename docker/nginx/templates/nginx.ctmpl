@@ -1,8 +1,14 @@
+# Rate limiting configuration
+limit_req_zone $binary_remote_addr zone=addr:10m rate=1r/s;
+# Too Many Requests error status code
+limit_req_status 429; 
+
+# Since I haven't mentioned Load-balancing Method, it will use the default Round Robin method
 {{range services}} {{$name := .Name}} {{ if ne $name "consul" }}
 upstream {{ $name }} {
   zone upstream-{{$name}} 64k;
-  {{range service .Name}}server host.docker.internal:{{ .Port }} max_fails=3 fail_timeout=60 weight=1;
-  {{else}}server 127.0.0.1:65535; # force a 502{{end}}
+  {{range service .Name}}server host.docker.internal:{{ .Port }} max_fails=3 fail_timeout=60 weight=1; {{end}}
+  server 192.0.0.1 backup;
 } 
 {{end}} {{end}}
 
@@ -17,17 +23,116 @@ server {
     location /stub_status {
         stub_status;
     }
+
+    # Custom error page for unauthorized access
+    error_page 401 = @custom_401;
+    error_page 429 = @custom_429;
+    error_page 404 = @custom_404;
+
+    # Handle the custom JSON response for 401, 429
+    location @custom_401 {
+        internal;
+        default_type application/json;
+        return 401 '{"success": false, "message": "Unauthorized access"}';
+    }
+    
+    location @custom_429 {
+        internal;
+        default_type application/json;
+        return 429 '{"success": false, "message": "Please slow down, too many requests"}';
+    }
+   
+    location @custom_404 {
+        internal;
+        default_type application/json;
+        return 404 '{"success": false, "message": "Not Found"}';
+    }
+
     {{range services}} {{$name := .Name}} {{ if ne $name "consul" }}
-    location /{{ $name }} {
+    {{range service .Name}}
+    # Health check endpoint
+    location = /{{ .Address }}/health {
         proxy_pass http://{{ $name }};
+    }
+
+    # Auth service requires no authentication
+    {{ if eq $name "auth-service" }}
+    # Authentication check for all services except auth service
+    location = /{{ .Address }}/check {
+        internal;
+        proxy_pass http://{{ $name }}/auth/verify-token;
+        proxy_set_header X-Original-URI $request_uri;
+        proxy_pass_request_body off;
+        proxy_set_header Content-Length "";
+    } 
+
+    location /{{ .Address }}/ {
+        # Utilizing the Rate Limit Zone
+        limit_req zone=addr burst=3 nodelay;
+
+        proxy_pass http://{{ $name }};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_cache_bypass $http_upgrade;
-        proxy_pass_request_headers on;
     } 
-    {{end}} {{end}}
+    {{else}}
+
+    # Publicly accessible endpoints, no authentication required
+    {{ if eq $name "product-service" }}
+    location /{{ .Address }}/list/ {
+        # Utilizing the Rate Limit Zone
+        limit_req zone=addr burst=3 nodelay;
+        proxy_pass http://{{ $name }};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    } {{ else if eq $name "orders-service" }}
+    location /{{ .Address }}/list/ {
+        # Utilizing the Rate Limit Zone
+        limit_req zone=addr burst=3 nodelay;
+        proxy_pass http://{{ $name }};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    } {{ end }}
+
+    # Private endpoints, require authentication
+    location /{{ .Address }}/ {
+        # Utilizing the Rate Limit Zone
+        limit_req zone=addr burst=3 nodelay;
+
+        auth_request /auth/check;
+        auth_request_set $auth_status $upstream_status;
+
+        proxy_pass http://{{ $name }};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+
+        # Handle the case when auth_request returns 401
+        # error_page 401 = @custom_401;
+    } {{end}}
+    {{end}} {{end}} {{end}}
 }
 
 

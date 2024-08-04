@@ -10,10 +10,12 @@ import {
 	ProductCreationSchema,
 	ProductUpdateSchema,
 } from '../schema/product.schema';
+import { getUpsellProducts } from '../controllers/upsell.controller';
 
 const router = Router();
 
-router.get('/', errorHandler(getProducts));
+router.get('/list', errorHandler(getProducts));
+router.get('/list/upsell', errorHandler(getUpsellProducts));
 
 router.post(
 	'/',

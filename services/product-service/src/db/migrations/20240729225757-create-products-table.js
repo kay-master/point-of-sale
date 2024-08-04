@@ -19,6 +19,11 @@ module.exports = {
 				type: Sequelize.STRING,
 				unique: true,
 			},
+			userId: {
+				allowNull: false,
+				type: Sequelize.BIGINT,
+				field: 'user_id',
+			},
 			price: {
 				type: Sequelize.FLOAT,
 				allowNull: false,

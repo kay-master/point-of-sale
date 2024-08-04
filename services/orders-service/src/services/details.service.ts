@@ -30,7 +30,7 @@ export const getOrdersService = async (_req: Request) => {
  */
 export const orderDetailsService = async (req: Request) => {
 	const userId = 1;
-	const orderId = req.params.id;
+	const { orderId } = req.params;
 
 	const order = await Order.findOne({
 		where: {

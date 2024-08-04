@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, register } from '../controllers/auth.controller';
+import { login, register, verifyToken } from '../controllers/auth.controller';
 import { errorHandler, validateData } from '@libs/middlewares';
 import { LoginSchema, RegisterSchema } from '../schema/auth.schema';
 
@@ -12,5 +12,6 @@ router.get('/health', (_req, res) => {
 
 router.post('/register', validateData(RegisterSchema), errorHandler(register));
 router.post('/login', validateData(LoginSchema), errorHandler(login));
+router.get('/verify-token', errorHandler(verifyToken));
 
 export default router;

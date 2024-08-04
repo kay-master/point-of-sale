@@ -16,6 +16,7 @@ import { UpsellProduct } from './upsellProduct.model';
 export interface ProductCreationAttributes {
 	name: string;
 	price: number;
+	userId: number;
 	quantity: number;
 	description: string;
 	sku: string;
@@ -58,6 +59,13 @@ export class Product extends Model<Product, ProductCreationAttributes> {
 		unique: true,
 	})
 	sku!: string;
+
+	@Column({
+		type: DataType.BIGINT,
+		allowNull: false,
+		field: 'user_id',
+	})
+	userId!: number;
 
 	@Column({
 		type: DataType.FLOAT,

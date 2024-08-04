@@ -138,3 +138,4 @@ docker/mysql/data
 /docker/consul/data
 
 /docker/nginx/conf.data/default*
+services/**/*.pem

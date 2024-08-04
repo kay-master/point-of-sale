@@ -1,8 +1,13 @@
 import { Op } from 'sequelize';
 import { Product } from '../db/models/product.model';
 import { UpsellCreationType } from '../schema/upsell.schema';
-import { BadRequestException, NotFoundException } from '@libs/middlewares';
+import {
+	BadRequestException,
+	NotFoundException,
+	UnauthorizedException,
+} from '@libs/middlewares';
 import { UpsellProduct } from '../db/models/upsellProduct.model';
+import { Request } from 'express';
 
 const retrieveUpsellProducts = async (productId: number) => {
 	const results = await Product.scope('withUpsells').findByPk(productId);
@@ -24,8 +29,12 @@ export const getUpsellProductsService = async (productId: number) => {
  * @param upsellProductId Product Id of the product to be upselled
  * @returns
  */
-export const createUpsellProductService = async (data: UpsellCreationType) => {
-	const { productId, upsellProductId } = data;
+export const createUpsellProductService = async (req: Request) => {
+	const { productId, upsellProductId } = req.body as UpsellCreationType;
+
+	if (!req.user) {
+		throw new UnauthorizedException('Account not found');
+	}
 
 	// Check if the upselled product is not the same as the product
 	if (productId === upsellProductId) {
@@ -41,6 +50,7 @@ export const createUpsellProductService = async (data: UpsellCreationType) => {
 			id: {
 				[Op.in]: [productId, upsellProductId],
 			},
+			userId: req.user.accountId,
 		},
 	});
 
@@ -75,11 +85,28 @@ export const createUpsellProductService = async (data: UpsellCreationType) => {
 	return await retrieveUpsellProducts(productId);
 };
 
-export const removeUpsellProductService = async (upsellId: number) => {
-	const upsell = await UpsellProduct.findByPk(upsellId);
+export const removeUpsellProductService = async (req: Request) => {
+	const upsellId = parseInt(req.params.upsellId);
+
+	if (!req.user) {
+		throw new UnauthorizedException('Account not found');
+	}
+
+	// Check if the upsell record exists and the user owns the product
+	const upsell = await UpsellProduct.findOne({
+		where: { id: upsellId },
+		include: {
+			model: Product,
+			as: 'product',
+			where: { userId: req.user.accountId },
+		},
+	});
 
 	if (!upsell) {
-		throw new NotFoundException('Upsell Product not found', null);
+		throw new NotFoundException(
+			'Upsell Product not found or user does not own the product',
+			null
+		);
 	}
 
 	await upsell.destroy();

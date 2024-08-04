@@ -19,7 +19,7 @@ export const getProducts = async (req: Request, res: Response) => {
 export const createProduct = async (req: Request, res: Response) => {
 	res.status(HTTP_STATUS_CODES.CREATED).json(
 		successResponse(
-			await createProductService(req.body),
+			await createProductService(req),
 			'Product created successfully'
 		)
 	);
@@ -28,7 +28,7 @@ export const createProduct = async (req: Request, res: Response) => {
 export const updateProduct = async (req: Request, res: Response) => {
 	res.status(HTTP_STATUS_CODES.OK).json(
 		successResponse(
-			await updateProductService(parseInt(req.params.id), req.body),
+			await updateProductService(req),
 			'Product updated successfully'
 		)
 	);
@@ -37,7 +37,7 @@ export const updateProduct = async (req: Request, res: Response) => {
 export const deleteProduct = async (req: Request, res: Response) => {
 	res.status(HTTP_STATUS_CODES.OK).json(
 		successResponse(
-			await deleteProductService(parseInt(req.params.id)),
+			await deleteProductService(req),
 			'Product deleted successfully'
 		)
 	);

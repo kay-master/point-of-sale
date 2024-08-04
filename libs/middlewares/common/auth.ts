@@ -1,6 +1,27 @@
+import * as jwt from "jsonwebtoken";
+import fs from "fs";
+import path from "path";
+import { HTTP_STATUS_CODES } from "../exceptions";
+import { errorResponse } from "../httpResponse";
 import { NotFoundException } from "./../exceptions/not-found";
 import { UnauthorizedException } from "./../exceptions/validation";
 import { NextFunction, Request, Response } from "express";
+import { SOMETHING_WENT_WRONG } from "@libs/interfaces";
+
+export const getTokenKey = (
+	servicePath: string,
+	keyType: "public" | "private",
+) => {
+	try {
+		const keyPath = path.resolve(servicePath, "secrets", keyType + ".pem");
+
+		return fs.readFileSync(keyPath, "utf8");
+	} catch (err) {
+		console.error("getTokenKey:", err);
+
+		return "";
+	}
+};
 
 /**
  * Inter-service authentication middleware.
@@ -38,33 +59,74 @@ export const authMiddleware = (
 	}
 };
 
-export const extractUser = (
-	req: Request,
-	_res: Response,
-	next: NextFunction,
-) => {
-	const userId = req.headers["x-account-id"];
-
-	if (!userId) {
-		next(new UnauthorizedException());
-	}
-
-	// @ts-ignore
-	req.user = {
-		accountId: parseInt(userId as string),
-	};
-
-	return next();
-};
-
-export const routeMiddleware = (
+export const extractToken = (
+	servicePath: string,
 	req: Request,
 	res: Response,
 	next: NextFunction,
 ) => {
-	if (req.url.includes("/internal")) {
-		return authMiddleware(req, res, next);
+	const authHeader = req.headers.authorization;
+
+	if (!authHeader) {
+		console.error("extractToken: Authorization header not found!");
+
+		return res.status(HTTP_STATUS_CODES.UNAUTHORIZED).json(
+			errorResponse("Unauthorized access", {
+				error: "Authorization header not found",
+			}),
+		);
 	}
 
-	extractUser(req, res, next);
+	const token = authHeader.split(" ")[1];
+
+	if (!token) {
+		console.error("extractToken: Token not found in the Authorization header!");
+
+		return res.status(HTTP_STATUS_CODES.UNAUTHORIZED).json(
+			errorResponse("Unauthorized access", {
+				error: "Token not found",
+			}),
+		);
+	}
+
+	const secret = getTokenKey(servicePath, "public");
+
+	if (!secret) {
+		console.error("extractToken: Token secret not configured!");
+
+		return res
+			.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
+			.json(errorResponse(SOMETHING_WENT_WRONG));
+	}
+
+	try {
+		// @ts-ignore
+		req.user = jwt.verify(token, secret, {
+			algorithms: ["RS256"],
+		});
+		next();
+	} catch (error) {
+		console.error("extractToken: Token verification failed!", error);
+
+		return res.status(HTTP_STATUS_CODES.UNAUTHORIZED).json(
+			errorResponse("Unauthorized access", {
+				error: "Invalid token",
+			}),
+		);
+	}
+};
+
+/**
+ * @param servicePath can be just `__dirname` or `__dirname + '/../../'`
+ */
+export const routeMiddleware = (servicePath: string) => {
+	console.log("servicePath", servicePath);
+
+	return (req: Request, res: Response, next: NextFunction) => {
+		if (req.url.includes("/internal")) {
+			return authMiddleware(req, res, next);
+		}
+
+		extractToken(servicePath, req, res, next);
+	};
 };
