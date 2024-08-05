@@ -6,7 +6,7 @@ import {
 import { msgConsumer } from './consumers/consumer';
 
 export async function rabbitMqInit() {
-	const rabbitMQService = await bootstrapRabbitMQ('ORDERS_SERVICE');
+	const rabbitMQService = await bootstrapRabbitMQ('PRODUCT_SERVICE');
 	rabbitMQService.connection.on('connection', () => {
 		// Create publisher
 		rabbitMQService.createPublisher({

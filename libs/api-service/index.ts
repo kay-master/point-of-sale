@@ -5,23 +5,28 @@ import axios, {
 	AxiosRequestHeaders,
 	Method,
 } from "axios";
-import { SERVICE, SERVICE_URLS } from "./service-urls";
+import { SERVICE, SERVICE_NAME } from "./service-urls";
 import { ResponseData } from "@libs/interfaces";
+import { ServiceDiscovery } from "./serviceDiscovery";
 
 type RequestHeaders = Partial<
 	AxiosRequestHeaders & {
-		"x-account-id": string;
-		"x-user-role": string;
+		"x-service-name": string;
+		"service-token": string;
 	}
 >;
 
 class ApiService {
 	private static axiosInstances: { [key in SERVICE]?: AxiosInstance } = {};
 
-	private static getAxiosInstance(service: SERVICE): AxiosInstance {
+	private static async getAxiosInstance(
+		service: SERVICE,
+	): Promise<AxiosInstance> {
 		if (!this.axiosInstances[service]) {
+			const serviceURL = await ServiceDiscovery.getServiceAddress(service);
+
 			this.axiosInstances[service] = axios.create({
-				baseURL: SERVICE_URLS[service],
+				baseURL: serviceURL,
 				headers: {
 					"Content-Type": "application/json",
 				},
@@ -70,7 +75,7 @@ class ApiService {
 		headers?: RequestHeaders,
 	) {
 		try {
-			const axiosInstance = this.getAxiosInstance(service);
+			const axiosInstance = await this.getAxiosInstance(service);
 
 			const customHeaders = {
 				...headers,
@@ -152,4 +157,4 @@ class ApiService {
 	}
 }
 
-export { ApiService, SERVICE_URLS, SERVICE };
+export { ApiService, SERVICE_NAME, SERVICE };

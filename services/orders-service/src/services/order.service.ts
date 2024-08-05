@@ -13,7 +13,7 @@ import {
 	OrderDetail,
 	OrderDetailCreationAttributes,
 } from '../db/models/orderDetail.model';
-// import { ORDER_EVENTS, OrderEvent, publishEvent } from '@libs/rabbit-mq';
+import { ORDER_EVENTS, OrderEvent, publishEvent } from '@libs/event-bus';
 
 /**
  * Inter-service communication to fetch product details from the product service
@@ -27,6 +27,7 @@ const getProducts = async (data: OrderCreationType, req: Request) => {
 		products: JSON.stringify([...productIds, ...upsellProductIds]),
 	};
 
+	// Get products from the product service
 	const products = await ApiService.get<Product[]>(
 		'PRODUCT_SERVICE',
 		req,
@@ -38,10 +39,6 @@ const getProducts = async (data: OrderCreationType, req: Request) => {
 	}
 
 	return products.data;
-};
-
-export const testSertvice = async () => {
-	return 'test';
 };
 
 export const createOrderService = async (req: Request) => {
@@ -184,16 +181,16 @@ export const createOrderService = async (req: Request) => {
 		await order.save({ transaction });
 
 		// TODO: On successful creation of the order, update the stock of the products in the product service (quantity of remaining products in stock)
-		// publishEvent({
-		// 	queue: {
-		// 		exchange: ORDER_EVENTS.exchange,
-		// 		routingKey: OrderEvent.ORDER_CREATED,
-		// 	},
-		// 	data: {
-		// 		orderId: order.orderId,
-		// 		userId: accountId,
-		// 	},
-		// });
+		publishEvent({
+			queue: {
+				exchange: ORDER_EVENTS.exchange,
+				routingKey: OrderEvent.ORDER_CREATED,
+			},
+			data: {
+				orderId: order.orderId,
+				userId: accountId,
+			},
+		});
 
 		await transaction.commit();
 	} catch (error) {

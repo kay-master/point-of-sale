@@ -8,6 +8,11 @@ export async function msgConsumer(
 		case OrderEvent.ORDER_CREATED: {
 			// return await updateEmployeeId(message.data);
 			console.log('Order created', message.data);
+
+			break;
+		}
+		case OrderEvent.ORDER_UPDATED: {
+			return ConsumerStatus.ACK;
 		}
 	}
 

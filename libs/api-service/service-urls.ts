@@ -1,7 +1,7 @@
-export const SERVICE_URLS = {
-	AUTH_SERVICE: "http://localhost/auth",
-	PRODUCT_SERVICE: "http://localhost/products",
-	ORDERS_SERVICE: "http://localhost/orders",
+export const SERVICE_NAME = {
+	AUTH_SERVICE: "auth-service/auth",
+	PRODUCT_SERVICE: "product-service/products",
+	ORDERS_SERVICE: "orders-service/orders",
 };
 
-export type SERVICE = keyof typeof SERVICE_URLS;
+export type SERVICE = keyof typeof SERVICE_NAME;
