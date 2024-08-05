@@ -1,4 +1,5 @@
 import {
+	NOTIFICATION_EVENTS,
 	ORDER_EVENTS,
 	PRODUCT_EVENTS,
 	bootstrapRabbitMQ,
@@ -18,7 +19,8 @@ export async function rabbitMqInit() {
 	// Subscribe to different queues from this service
 
 	rabbitMQService.subscribe(
-		ORDER_EVENTS.name,
+		ORDER_EVENTS.exchange,
+		NOTIFICATION_EVENTS.queue,
 		{
 			exchanges: [{ exchange: ORDER_EVENTS.exchange, type: 'fanout' }],
 			queueBindings: [
@@ -32,7 +34,8 @@ export async function rabbitMqInit() {
 	);
 
 	rabbitMQService.subscribe(
-		PRODUCT_EVENTS.name,
+		PRODUCT_EVENTS.exchange,
+		NOTIFICATION_EVENTS.queue,
 		{
 			exchanges: [{ exchange: PRODUCT_EVENTS.exchange, type: 'fanout' }],
 			queueBindings: [

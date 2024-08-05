@@ -32,3 +32,7 @@ Example:
 ```bash
 docker/runDocker.sh prod up -d
 ```
+
+1. order creation
+2. order updates
+3. low stock

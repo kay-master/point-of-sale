@@ -8,6 +8,7 @@ import {
 } from '../controllers/product.controller';
 import {
 	createUpsellProduct,
+	getAllUpsellProducts,
 	getUpsellProducts,
 	removeUpsellProduct,
 } from '../controllers/upsell.controller';
@@ -28,6 +29,7 @@ router.get('/list', errorHandler(getProducts));
 
 // Upsell routes
 router.get('/list/upsell', errorHandler(getUpsellProducts));
+router.get('/list/upsell-products', errorHandler(getAllUpsellProducts));
 
 // Middleware to authenticate  below routes
 router.use(routeMiddleware(__dirname + '/../'));

@@ -22,7 +22,7 @@ const LOW_STOCK_THRESHOLD = 5;
 export const updateProductStock = async (data: EventOrderDetail) => {
 	const { products } = data;
 
-	console.log('Received message: updateProductStock');
+	console.log('Received message: ', data);
 
 	const productList: ProductDetail[] = products.map((product) => ({
 		sku: product.sku,

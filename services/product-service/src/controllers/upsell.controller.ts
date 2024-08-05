@@ -2,57 +2,47 @@
 
 import { Request, Response } from 'express';
 
-import { HTTP_STATUS_CODES, successResponse } from '@libs/middlewares';
+import {
+	HTTP_STATUS_CODES,
+	errorResponse,
+	successResponse,
+} from '@libs/middlewares';
 
 import {
 	createUpsellProductService,
-	getUpsellProductsService,
 	removeUpsellProductService,
+	retrieveUpsellProducts,
 } from '../services/upsell.service';
+
+export const getAllUpsellProducts = async (_req: Request, res: Response) => {
+	// Check if the product has any upselled products
+	const results = await retrieveUpsellProducts();
+
+	res.status(HTTP_STATUS_CODES.OK).json(
+		successResponse(results, 'Upsell products')
+	);
+};
 
 export const getUpsellProducts = async (req: Request, res: Response) => {
 	const { productId } = req.query;
 
 	if (!productId) {
-		return res.status(HTTP_STATUS_CODES.BAD_REQUEST).json({
-			message: 'Product Id is required',
-		});
+		return res
+			.status(HTTP_STATUS_CODES.BAD_REQUEST)
+			.json(errorResponse('Product Id is required'));
 	}
 
 	// Check if the product has any upselled products
-	const results = await getUpsellProductsService(
-		parseInt(productId as string)
-	);
+	const results = await retrieveUpsellProducts(parseInt(productId as string));
 
-	const upsellProducts = results.upsellProducts;
-
-	const product = {
-		productId: results.productId,
-		name: results.name,
-		description: results.description,
-		price: results.price,
-	};
-
-	if (upsellProducts.length === 0) {
-		return res.status(HTTP_STATUS_CODES.NOT_FOUND).json(
-			successResponse(
-				{
-					product,
-					upsellProducts: upsellProducts,
-				},
-				'Product has no upselled products'
-			)
-		);
+	if (results.length === 0) {
+		return res
+			.status(HTTP_STATUS_CODES.NOT_FOUND)
+			.json(successResponse(results, 'Product has no upselled products'));
 	}
 
 	res.status(HTTP_STATUS_CODES.OK).json(
-		successResponse(
-			{
-				product,
-				upsellProducts: upsellProducts,
-			},
-			'Upsell products retrieved successfully'
-		)
+		successResponse(results, 'Upsell products retrieved successfully')
 	);
 };
 

@@ -98,7 +98,8 @@ class RabbitMQService {
 	}
 
 	async subscribe(
-		queue: string,
+		exchangeName: string,
+		queueName: string,
 		consumerProps: Omit<ConsumerProps, "queue" | "queueOptions" | "qos">,
 		callback: (message: MessageData) => Promise<ConsumerStatus | void>,
 	) {
@@ -106,9 +107,18 @@ class RabbitMQService {
 			await this.connect();
 		}
 
+		// Declare the queue first
+		await this.connection.queueDeclare({ queue: queueName, durable: true });
+
+		// Bind the queue to the exchange
+		await this.connection.queueBind({
+			queue: queueName,
+			exchange: exchangeName,
+		});
+
 		this.consumer = this.connection.createConsumer(
 			{
-				queue,
+				queue: queueName,
 				queueOptions: { durable: true },
 				qos: { prefetchCount: 2 },
 				...consumerProps,
@@ -122,7 +132,7 @@ class RabbitMQService {
 		);
 
 		this.consumer.on("error", (err: any) => {
-			console.log(`Consumer error (${queue})`, err);
+			console.log(`Consumer error (${queueName})`, err);
 		});
 	}
 

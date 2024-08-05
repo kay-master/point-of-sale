@@ -8,21 +8,29 @@ export const EVENT_BUS = {
 export const AUTH_EVENTS = {
 	name: "auth-events",
 	exchange: "auth",
+	queue: "auth-service",
 	routingKey: "auth.*",
 };
 
 export const PRODUCT_EVENTS = {
 	name: "product-events",
 	exchange: "product",
-	exchangeDirect: "product.direct",
+	queue: "product-service",
 	routingKey: "product.*",
 };
 
 export const ORDER_EVENTS = {
 	name: "order-events",
 	exchange: "order",
-	exchangeDirect: "order.direct",
+	queue: "order-service",
 	routingKey: "order.*",
+};
+
+export const NOTIFICATION_EVENTS = {
+	name: "notification-events",
+	exchange: "notification",
+	queue: "notification-service",
+	routingKey: "notification.*",
 };
 
 // Auth Events

@@ -58,7 +58,10 @@ export class UpsellProduct extends Model<
 	@BelongsTo(() => Product, 'productId')
 	product!: Product;
 
-	@BelongsTo(() => Product, 'upsellProductId')
+	@BelongsTo(() => Product, {
+		as: 'upsellProductDetail',
+		foreignKey: 'upsellProductId',
+	})
 	upsellProduct!: Product;
 
 	@AfterDestroy

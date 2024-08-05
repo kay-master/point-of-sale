@@ -17,7 +17,8 @@ export async function rabbitMqInit() {
 	// Subscribe to different queues from this service
 
 	rabbitMQService.subscribe(
-		ORDER_EVENTS.name,
+		ORDER_EVENTS.exchange,
+		PRODUCT_EVENTS.queue,
 		{
 			exchanges: [{ exchange: ORDER_EVENTS.exchange, type: 'fanout' }],
 			queueBindings: [
