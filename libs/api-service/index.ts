@@ -28,6 +28,7 @@ class ApiService {
 				validateStatus: (status) => {
 					return status >= 200 && status < 500;
 				},
+				maxRedirects: 5,
 			});
 
 			this.axiosInstances[service]?.interceptors.request.use((config) => {
@@ -73,8 +74,8 @@ class ApiService {
 
 			const customHeaders = {
 				...headers,
-				"x-account-id": req.headers["x-account-id"],
-				"x-user-service": req.headers["x-user-service"] || undefined,
+				"x-service-name": process.env.SERVICE_NAME || "",
+				authentication: req.headers ? req.headers.authorization : "",
 			} as unknown as AxiosRequestHeaders;
 
 			const response = await axiosInstance<ResponseData<Response>>({

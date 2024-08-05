@@ -1,11 +1,11 @@
 import { Request } from 'express';
 import DB from '../db';
 import { Order, OrderStatus } from '../db/models/order.model';
-import { OrderCreationType } from '../schema/order.schema';
+import { OrderCreationType, OrderUpdateType } from '../schema/order.schema';
 import {
 	BadRequestException,
 	InternalException,
-	// UnauthorizedException,
+	UnauthorizedException,
 } from '@libs/middlewares';
 import { ApiService } from '@libs/api-service';
 import { Product } from '../interfaces/order.interface';
@@ -13,6 +13,7 @@ import {
 	OrderDetail,
 	OrderDetailCreationAttributes,
 } from '../db/models/orderDetail.model';
+// import { ORDER_EVENTS, OrderEvent, publishEvent } from '@libs/rabbit-mq';
 
 /**
  * Inter-service communication to fetch product details from the product service
@@ -29,7 +30,7 @@ const getProducts = async (data: OrderCreationType, req: Request) => {
 	const products = await ApiService.get<Product[]>(
 		'PRODUCT_SERVICE',
 		req,
-		'/'
+		'/list'
 	);
 
 	if (!products.success) {
@@ -39,14 +40,18 @@ const getProducts = async (data: OrderCreationType, req: Request) => {
 	return products.data;
 };
 
+export const testSertvice = async () => {
+	return 'test';
+};
+
 export const createOrderService = async (req: Request) => {
-	// if (!req.user) {
-	// 	throw new UnauthorizedException();
-	// }
+	if (!req.user) {
+		throw new UnauthorizedException();
+	}
 
 	const transaction = await DB.transaction();
 
-	const accountId = 1; // req.user.accountId;
+	const accountId = req.user.accountId;
 	const orderData = req.body as OrderCreationType;
 
 	try {
@@ -178,13 +183,17 @@ export const createOrderService = async (req: Request) => {
 		order.totalAmount = totalAmount;
 		await order.save({ transaction });
 
-		// TODO: After successful creation of the order, update the stock of the products in the product service (quantity of remaining products in stock)
-		// await ApiService.post(
-		// 	'PRODUCT_SERVICE',
-		// 	req,
-		// 	'/stock/update',
-		// 	orderData.items
-		// );
+		// TODO: On successful creation of the order, update the stock of the products in the product service (quantity of remaining products in stock)
+		// publishEvent({
+		// 	queue: {
+		// 		exchange: ORDER_EVENTS.exchange,
+		// 		routingKey: OrderEvent.ORDER_CREATED,
+		// 	},
+		// 	data: {
+		// 		orderId: order.orderId,
+		// 		userId: accountId,
+		// 	},
+		// });
 
 		await transaction.commit();
 	} catch (error) {
@@ -198,4 +207,53 @@ export const createOrderService = async (req: Request) => {
 
 		throw new InternalException('Failed to create order', null);
 	}
+};
+
+/**
+ * Order status can be one of the following: Pending, Processing, Complete, Cancelled
+ * @param req
+ * @returns
+ */
+export const updateOrderStatusService = async (req: Request) => {
+	if (!req.user) {
+		throw new UnauthorizedException();
+	}
+
+	const userId = req.user.accountId;
+
+	const { orderId } = req.params;
+	const { status } = req.body as OrderUpdateType;
+
+	const order = await Order.findOne({
+		where: {
+			orderId,
+			userId,
+		},
+		attributes: ['orderId', 'status', 'totalAmount', 'updatedAt'],
+	});
+
+	if (!order) {
+		throw new BadRequestException(
+			`Order with ID ${orderId} not found`,
+			null
+		);
+	}
+
+	await order.update({
+		status,
+	});
+
+	// Publish the order status update event
+	// publishEvent({
+	// 	queue: {
+	// 		exchange: ORDER_EVENTS.exchange,
+	// 		routingKey: OrderEvent.ORDER_UPDATED,
+	// 	},
+	// 	data: {
+	// 		orderId: order.orderId,
+	// 		status,
+	// 	},
+	// });
+
+	return order;
 };

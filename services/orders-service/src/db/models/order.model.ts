@@ -15,6 +15,7 @@ export enum OrderStatus {
 	PENDING = 'pending',
 	PROCESSING = 'processing',
 	COMPLETE = 'complete',
+	CANCELLED = 'cancelled',
 }
 
 interface OrderCreationAttributes {

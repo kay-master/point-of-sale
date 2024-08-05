@@ -1,4 +1,4 @@
-import { NotFoundException } from '@libs/middlewares';
+import { NotFoundException, UnauthorizedException } from '@libs/middlewares';
 import { Order } from '../db/models/order.model';
 import { OrderDetail } from '../db/models/orderDetail.model';
 import { Request } from 'express';
@@ -6,12 +6,14 @@ import { Request } from 'express';
 /**
  * Fetch all orders for an authenticated user
  */
-export const getOrdersService = async (_req: Request) => {
-	const userId = 1;
+export const getOrdersService = async (req: Request) => {
+	if (!req.user) {
+		throw new UnauthorizedException();
+	}
 
 	const orders = await Order.findAll({
 		where: {
-			userId,
+			userId: req.user.accountId,
 		},
 		include: [
 			{
@@ -29,13 +31,16 @@ export const getOrdersService = async (_req: Request) => {
  * Fetch order details for a specific order that is associated with an authenticated user
  */
 export const orderDetailsService = async (req: Request) => {
-	const userId = 1;
+	if (!req.user) {
+		throw new UnauthorizedException();
+	}
+
 	const { orderId } = req.params;
 
 	const order = await Order.findOne({
 		where: {
 			orderId,
-			userId,
+			userId: req.user.accountId,
 		},
 		include: [
 			{

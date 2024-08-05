@@ -21,7 +21,12 @@ module.exports = {
 				field: 'total_amount',
 			},
 			status: {
-				type: Sequelize.ENUM('pending', 'processing', 'complete'),
+				type: Sequelize.ENUM(
+					'pending',
+					'processing',
+					'complete',
+					'cancelled'
+				),
 				allowNull: false,
 				defaultValue: 'pending',
 			},

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { OrderStatus } from '../db/models/order.model';
 
 export const OrderCreationSchema = z.object({
 	items: z
@@ -27,3 +28,13 @@ export const OrderCreationSchema = z.object({
 });
 
 export type OrderCreationType = z.infer<typeof OrderCreationSchema>;
+
+const filterOrderStatus = Object.values(OrderStatus)
+	.map((role) => role)
+	.filter((role) => role !== OrderStatus.PENDING);
+
+export const OrderUpdateSchema = z.object({
+	status: z.enum([OrderStatus.PENDING, ...filterOrderStatus]),
+});
+
+export type OrderUpdateType = z.infer<typeof OrderUpdateSchema>;

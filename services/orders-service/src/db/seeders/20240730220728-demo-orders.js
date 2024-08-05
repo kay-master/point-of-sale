@@ -27,6 +27,13 @@ module.exports = {
 					created_at: new Date(),
 					updated_at: new Date(),
 				},
+				{
+					total_amount: 300.49,
+					user_id: 3,
+					status: 'cancelled',
+					created_at: new Date(),
+					updated_at: new Date(),
+				},
 			],
 			{}
 		);

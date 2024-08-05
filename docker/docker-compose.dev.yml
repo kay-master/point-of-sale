@@ -17,6 +17,7 @@ services:
     networks:
       - consulnetwork
       - mysqlnetwork
+      - rabbitmqnetwork
     volumes:
       - ../services/auth-service:/usr/src/app/services/auth-service
       - ../libs:/usr/src/app/libs
@@ -38,6 +39,7 @@ services:
     networks:
       - consulnetwork
       - mysqlnetwork
+      - rabbitmqnetwork
     volumes:
       - ../services/product-service:/usr/src/app/services/product-service
       - ../libs:/usr/src/app/libs
@@ -59,6 +61,7 @@ services:
     networks:
       - consulnetwork
       - mysqlnetwork
+      - rabbitmqnetwork
     volumes:
       - ../services/orders-service:/usr/src/app/services/orders-service
       - ../libs:/usr/src/app/libs
@@ -73,4 +76,6 @@ networks:
   mysqlnetwork:
     external: true
   consulnetwork:
+    external: true
+  rabbitmqnetwork:
     external: true

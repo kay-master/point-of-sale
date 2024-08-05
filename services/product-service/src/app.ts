@@ -6,6 +6,7 @@ import routes from './routes';
 import cors from 'cors';
 import { NotFoundException, errorMiddleware, logger } from '@libs/middlewares';
 import DB from './db';
+import { rabbitMqInit } from './events/rabbitmq.service';
 
 const app = express();
 
@@ -23,6 +24,9 @@ if (process.env.NODE_ENV === 'development') {
 
 // Register logger
 app.use(logger('combined'));
+
+// Initialize RabbitMQ connection
+rabbitMqInit();
 
 // Config routers
 app.use('/products', routes);

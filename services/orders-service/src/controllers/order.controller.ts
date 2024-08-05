@@ -1,6 +1,9 @@
 import { HTTP_STATUS_CODES, successResponse } from '@libs/middlewares';
 import { Request, Response } from 'express';
-import { createOrderService } from '../services/order.service';
+import {
+	createOrderService,
+	updateOrderStatusService,
+} from '../services/order.service';
 import {
 	getOrdersService,
 	orderDetailsService,
@@ -29,6 +32,15 @@ export const getOrderDetails = async (req: Request, res: Response) => {
 		successResponse(
 			await orderDetailsService(req),
 			'Order specific details'
+		)
+	);
+};
+
+export const updateOrderStatus = async (req: Request, res: Response) => {
+	res.status(HTTP_STATUS_CODES.OK).json(
+		successResponse(
+			await updateOrderStatusService(req),
+			'Order status updated successfully'
 		)
 	);
 };

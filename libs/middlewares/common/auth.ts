@@ -120,8 +120,6 @@ export const extractToken = (
  * @param servicePath can be just `__dirname` or `__dirname + '/../../'`
  */
 export const routeMiddleware = (servicePath: string) => {
-	console.log("servicePath", servicePath);
-
 	return (req: Request, res: Response, next: NextFunction) => {
 		if (req.url.includes("/internal")) {
 			return authMiddleware(req, res, next);

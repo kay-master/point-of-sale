@@ -5,3 +5,7 @@ node_modules
 dist
 **/dist
 .vscode
+
+docker/mysql/data
+docker/consul/data
+docker/rabbitmq

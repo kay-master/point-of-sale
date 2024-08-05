@@ -7,13 +7,14 @@ RUN corepack enable
 # Stage 2: Install dependencies
 FROM base AS development
 # Copy the source code
-COPY . /usr/src/app
 WORKDIR /usr/src/app
 
 # Copy workspace configuration and lockfile to leverage Docker cache
 COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
 COPY .npmrc ./
 COPY nx.json ./
+
+COPY . /usr/src/app
 
 # Install all dependencies (including dev dependencies)
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install

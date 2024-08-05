@@ -26,7 +26,7 @@ To start the servers:
 Example:
 
 - `docker/runDocker.sh prod up --build -d`
-- `docker/runDocker.sh dev up -d`
+- `docker/runDocker.sh dev up --build -d`
 - `docker/runDocker.sh dev down`
 
 ```bash

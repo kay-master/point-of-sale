@@ -66,6 +66,19 @@ services:
       - consulnetwork
     command: ["nginx", "-g", "daemon off;"]
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq
+      - ./rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config
+      - ./rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - rabbitmqnetwork
+
   consul-template:
     restart: always
     build:
@@ -95,4 +108,6 @@ networks:
   mysqlnetwork:
     driver: bridge
   consulnetwork:
+    driver: bridge
+  rabbitmqnetwork:
     driver: bridge

@@ -31,6 +31,7 @@ fi
 # Create external networks if they don't exist
 docker network inspect mysqlnetwork >/dev/null 2>&1 || docker network create --driver bridge mysqlnetwork
 docker network inspect consulnetwork >/dev/null 2>&1 || docker network create --driver bridge consulnetwork
+docker network inspect rabbitmqnetwork >/dev/null 2>&1 || docker network create --driver bridge rabbitmqnetwork
 
 # Run the docker-compose command with the appropriate files and arguments
 docker-compose -f "$BASE_COMPOSE_FILE" -f "$ENV_COMPOSE_FILE" "$ACTION" "$@"

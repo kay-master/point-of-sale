@@ -14,6 +14,7 @@
   "author": "@kay-master",
   "license": "ISC",
   "dependencies": {
+    "@libs/event-bus": "workspace:^",
     "@libs/interfaces": "workspace:^",
     "@libs/middlewares": "workspace:^",
     "@libs/service-register": "workspace:^",
