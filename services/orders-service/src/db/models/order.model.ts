@@ -10,13 +10,7 @@ import {
 	HasMany,
 } from 'sequelize-typescript';
 import { OrderDetail } from './orderDetail.model';
-
-export enum OrderStatus {
-	PENDING = 'pending',
-	PROCESSING = 'processing',
-	COMPLETE = 'complete',
-	CANCELLED = 'cancelled',
-}
+import { OrderStatus } from '@libs/interfaces';
 
 interface OrderCreationAttributes {
 	totalAmount: number;

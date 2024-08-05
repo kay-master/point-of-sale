@@ -1,5 +1,5 @@
+import { OrderStatus } from '@libs/interfaces';
 import { z } from 'zod';
-import { OrderStatus } from '../db/models/order.model';
 
 export const OrderCreationSchema = z.object({
 	items: z

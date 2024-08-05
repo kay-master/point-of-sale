@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import DB from '../db';
-import { Order, OrderStatus } from '../db/models/order.model';
+import { Order } from '../db/models/order.model';
 import { OrderCreationType, OrderUpdateType } from '../schema/order.schema';
 import {
 	BadRequestException,
@@ -14,6 +14,11 @@ import {
 	OrderDetailCreationAttributes,
 } from '../db/models/orderDetail.model';
 import { ORDER_EVENTS, OrderEvent, publishEvent } from '@libs/event-bus';
+import {
+	EventOrderDetail,
+	EventOrderStatus,
+	OrderStatus,
+} from '@libs/interfaces';
 
 /**
  * Inter-service communication to fetch product details from the product service
@@ -180,16 +185,24 @@ export const createOrderService = async (req: Request) => {
 		order.totalAmount = totalAmount;
 		await order.save({ transaction });
 
-		// TODO: On successful creation of the order, update the stock of the products in the product service (quantity of remaining products in stock)
+		const eventData: EventOrderDetail = {
+			orderId: order.orderId,
+			userId: accountId,
+			totalAmount,
+			products: orderDetails.map((item) => ({
+				productId: item.productId,
+				sku: item.productSKU,
+				quantity: item.quantity,
+			})),
+		};
+
+		// On successful creation of the order, update the stock of the products in the product service (quantity of remaining products in stock)
 		publishEvent({
 			queue: {
 				exchange: ORDER_EVENTS.exchange,
 				routingKey: OrderEvent.ORDER_CREATED,
 			},
-			data: {
-				orderId: order.orderId,
-				userId: accountId,
-			},
+			data: eventData,
 		});
 
 		await transaction.commit();
@@ -226,6 +239,12 @@ export const updateOrderStatusService = async (req: Request) => {
 			orderId,
 			userId,
 		},
+		include: [
+			{
+				model: OrderDetail,
+				as: 'details',
+			},
+		],
 		attributes: ['orderId', 'status', 'totalAmount', 'updatedAt'],
 	});
 
@@ -240,17 +259,28 @@ export const updateOrderStatusService = async (req: Request) => {
 		status,
 	});
 
-	// Publish the order status update event
-	// publishEvent({
-	// 	queue: {
-	// 		exchange: ORDER_EVENTS.exchange,
-	// 		routingKey: OrderEvent.ORDER_UPDATED,
-	// 	},
-	// 	data: {
-	// 		orderId: order.orderId,
-	// 		status,
-	// 	},
-	// });
+	const eventData: EventOrderStatus = {
+		orderId: order.orderId,
+		createdAt: order.createdAt,
+		userId,
+		updatedAt: order.updatedAt,
+		status,
+		products: order.details.map((detail) => ({
+			productId: detail.productId,
+			sku: detail.productSKU,
+			name: detail.productName,
+			quantity: detail.quantity,
+		})),
+	};
+
+	// TODO: Publish the order status update event: notification service
+	publishEvent({
+		queue: {
+			exchange: ORDER_EVENTS.exchange,
+			routingKey: OrderEvent.ORDER_UPDATED,
+		},
+		data: eventData,
+	});
 
 	return order;
 };
