@@ -22,11 +22,11 @@ if (process.env.NODE_ENV === 'development') {
 	});
 }
 
-// Register logger
-app.use(logger('combined'));
-
 // Initialize RabbitMQ connection
 rabbitMqInit();
+
+// Register logger
+app.use(logger('combined'));
 
 // Config routers
 app.use('/products', routes);

@@ -6,14 +6,21 @@ import { errorResponse } from "../httpResponse";
 import { NotFoundException } from "./../exceptions/not-found";
 import { UnauthorizedException } from "./../exceptions/validation";
 import { NextFunction, Request, Response } from "express";
-import { SOMETHING_WENT_WRONG } from "@libs/interfaces";
+import { SOMETHING_WENT_WRONG, SessionToken } from "@libs/interfaces";
 
 export const getTokenKey = (
 	servicePath: string,
 	keyType: "public" | "private",
 ) => {
 	try {
-		const keyPath = path.resolve(servicePath, "secrets", keyType + ".pem");
+		let link = servicePath;
+
+		if (process.env.NODE_ENV === "test") {
+			link = __dirname + "/../../../services/auth-service/src";
+		}
+
+		const keyPath = path.resolve(link, "secrets", keyType + ".pem");
+		console.log("keyPath", keyPath);
 
 		return fs.readFileSync(keyPath, "utf8");
 	} catch (err) {
@@ -127,4 +134,21 @@ export const routeMiddleware = (servicePath: string) => {
 
 		extractToken(servicePath, req, res, next);
 	};
+};
+
+export const signToken = (
+	servicePath: string,
+	data: SessionToken,
+	expiresIn = "10d",
+) => {
+	const secret = getTokenKey(servicePath, "private");
+
+	if (!secret) {
+		throw new NotFoundException("Token secret not found!", null);
+	}
+
+	return jwt.sign(data, secret, {
+		algorithm: "RS256",
+		expiresIn,
+	});
 };

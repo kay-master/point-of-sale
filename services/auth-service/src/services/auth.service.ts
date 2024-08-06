@@ -1,8 +1,7 @@
-import { BadRequestException } from '@libs/middlewares';
+import { BadRequestException, signToken } from '@libs/middlewares';
 import { User } from '../db/models/user.model';
 import { LoginType, RegisterType } from '../schema/auth.schema';
 import { ERROR_CODE } from '@libs/interfaces';
-import { signToken } from '../utils/encrypt';
 
 export const registerService = async (data: RegisterType) => {
 	const { email, password, firstName, lastName } = data;
@@ -46,7 +45,7 @@ export const loginService = async (data: LoginType) => {
 	}
 
 	// Sign JWT token
-	const token = signToken({
+	const token = signToken(__dirname + '/../', {
 		accountId: user.id,
 	});
 

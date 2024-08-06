@@ -1,21 +1,8 @@
 import { ERROR_CODE, SessionToken } from '@libs/interfaces';
-import { NotFoundException, getTokenKey } from '@libs/middlewares';
+import { getTokenKey } from '@libs/middlewares';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { User } from '../db/models/user.model';
-
-export const signToken = (data: SessionToken, expiresIn = '10d') => {
-	const secret = getTokenKey(__dirname + '/../', 'private');
-
-	if (!secret) {
-		throw new NotFoundException('Token secret not found!', null);
-	}
-
-	return jwt.sign(data, secret, {
-		algorithm: 'RS256',
-		expiresIn,
-	});
-};
 
 export const validateToken = async (req: Request) => {
 	const token = req.headers.authorization?.split(' ')[1];

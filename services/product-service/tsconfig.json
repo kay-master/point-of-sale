@@ -5,7 +5,8 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/config/config.js"
+    "src/config/config.js",
+    "tests/**/*.ts"
   ],
   "files": [
     "./types/express/index.d.ts"

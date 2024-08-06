@@ -1,10 +1,20 @@
 {
   "extends": "@pos/tsconfig/base.json",
   "compilerOptions": {
+    "target": "ES6",
+    "module": "CommonJS",
     "outDir": "dist",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
   },
   "include": [
     "src/**/*.ts",
-    "src/config/config.js"
+    "src/config/config.js",
+    "tests/**/*.ts"
   ]
 }

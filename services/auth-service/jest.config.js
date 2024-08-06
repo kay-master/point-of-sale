@@ -1,12 +1,13 @@
 module.exports = {
+	preset: 'ts-jest',
 	clearMocks: true,
-	coverageProvider: "v8",
-	moduleFileExtensions: ["js", "jsx", "ts", "tsx", "json", "node"],
-
-	roots: ["<rootDir>/src"],
-
-	testMatch: ["**/?(*.)+(spec|test).[tj]s?(x)"],
+	coverageProvider: 'v8',
+	testEnvironment: 'node',
+	roots: ['<rootDir>/tests'],
+	testMatch: ['<rootDir>/tests/**/*.test.ts'],
+	setupFilesAfterEnv: ['<rootDir>/tests/jest.setup.ts'],
+	moduleFileExtensions: ['ts', 'js', 'json', 'node'],
 	transform: {
-		"^.+\\.(ts|tsx)$": "ts-jest",
+		'^.+\\.(ts|tsx)$': 'ts-jest',
 	},
 };

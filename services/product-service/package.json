@@ -8,7 +8,9 @@
     "sq-cli": "npx sequelize-cli",
     "build": "rm -fr dist && tsc",
     "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "test --coverage --passWithNoTests",
+    "test:watch": "jest --passWithNoTests --detectOpenHandles --watch",
+    "seed:test": "npm run sq-cli db:migrate && npm run sq-cli db:seed:all"
   },
   "keywords": [],
   "author": "@kay-master",
@@ -40,6 +42,8 @@
     "@types/jest": "^29.5.12",
     "@types/node": "^20.14.12",
     "@types/sequelize": "^4.28.20",
+    "@types/sinon": "^17.0.3",
+    "@types/supertest": "^6.0.2",
     "@types/validator": "^13.12.0",
     "@typescript-eslint/eslint-plugin": "^7.13.1",
     "@typescript-eslint/parser": "^7.13.1",
@@ -53,6 +57,8 @@
     "jest": "^29.7.0",
     "nodemon": "^3.1.4",
     "sequelize-cli": "^6.6.2",
+    "sinon": "^18.0.0",
+    "supertest": "^7.0.0",
     "ts-jest": "^29.2.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.2"

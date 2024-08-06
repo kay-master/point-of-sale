@@ -1,0 +1,16 @@
+services:
+  mysql-test:
+    image: mysql:8.0
+    container_name: mysql-test
+    environment:
+      MYSQL_ROOT_PASSWORD: test-password
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: test-user
+      MYSQL_PASSWORD: test-password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-test:/var/lib/mysql
+
+volumes:
+  mysql-test:
