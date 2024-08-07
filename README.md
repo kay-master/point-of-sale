@@ -134,6 +134,12 @@ Incase for whatever reason `./startUp.sh` is not working all the way through, pl
 %: ./scripts/runDocker.sh dev up --build -d
 ```
 
+To shut down the server simply run:
+
+```bash
+%: ./scripts/runDocker.sh dev down
+```
+
 ## Environment Configuration
 
 Each service requires an environment configuration file (.env). An example configuration is provided in .env.example files in each service directory. However, creation of this is automated with the `./startUp.sh` script.
