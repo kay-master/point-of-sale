@@ -20,7 +20,6 @@ export const getTokenKey = (
 		}
 
 		const keyPath = path.resolve(link, "secrets", keyType + ".pem");
-		console.log("keyPath", keyPath);
 
 		return fs.readFileSync(keyPath, "utf8");
 	} catch (err) {

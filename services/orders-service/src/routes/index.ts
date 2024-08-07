@@ -21,7 +21,7 @@ router.get('/', errorHandler(getOrders));
 router.get('/:orderId', errorHandler(getOrderDetails));
 router.post('/', validateData(OrderCreationSchema), errorHandler(createOrder));
 
-router.put(
+router.patch(
 	'/:orderId/status',
 	validateData(OrderUpdateSchema),
 	errorHandler(updateOrderStatus)

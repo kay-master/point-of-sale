@@ -8,7 +8,9 @@
     "sq-cli": "npx sequelize-cli",
     "build": "rm -fr dist && tsc",
     "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env NODE_ENV=test jest --coverage --passWithNoTests",
+    "test:watch": "cross-env NODE_ENV=test jest --passWithNoTests --detectOpenHandles --watch",
+    "seed:test": " cross-env NODE_ENV=test npm run sq-cli db:migrate && npm run sq-cli db:seed:all"
   },
   "keywords": [],
   "author": "@kay-master",
@@ -45,6 +47,7 @@
     "@types/validator": "^13.12.0",
     "@typescript-eslint/eslint-plugin": "^7.13.1",
     "@typescript-eslint/parser": "^7.13.1",
+    "cross-env": "^7.0.3",
     "eslint": "^9.5.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard": "^17.1.0",

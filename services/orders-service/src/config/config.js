@@ -19,10 +19,11 @@ module.exports = {
 		dialect: MYSQL_DIALECT,
 	},
 	test: {
-		username: MYSQL_USER,
-		password: null,
-		database: MYSQL_DATABASE,
-		host: MYSQL_HOST,
+		username: 'test-user',
+		password: 'test-password',
+		database: 'test_db',
+		host: 'localhost',
+		port: 3307,
 		dialect: MYSQL_DIALECT,
 	},
 };

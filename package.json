@@ -8,7 +8,7 @@
     "watch:libs": "nx run-many --target=build --projects='@libs/*' --parallel --watch",
     "migrate:services": "pnpm --filter './services/**' run sq-cli db:migrate",
     "seed:services": "pnpm --filter './services/**' run sq-cli db:seed:all",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env NODE_ENV=test & nx run-many --projects='@pos/*' -t test --parallel"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +16,7 @@
   "devDependencies": {
     "@nx/eslint": "19.5.3",
     "@nx/jest": "19.5.3",
+    "cross-env": "^7.0.3",
     "eslint": "^9.5.0",
     "jest": "^29.7.0",
     "nx": "19.5.3"
