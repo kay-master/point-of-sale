@@ -12,17 +12,31 @@ export async function rabbitMqInit() {
 	rabbitMQService.connection.on('connection', () => {
 		// Create publisher
 		rabbitMQService.createPublisher({
-			exchanges: [{ exchange: PRODUCT_EVENTS.name, type: 'fanout' }],
+			exchanges: [
+				{
+					exchange: PRODUCT_EVENTS.name,
+					type: 'fanout',
+					durable: true,
+				},
+			],
 		});
 	});
 
 	// Subscribe to different queues from this service
 
 	rabbitMQService.subscribe(
-		ORDER_EVENTS.exchange,
-		PRODUCT_EVENTS.queue,
 		{
-			exchanges: [{ exchange: ORDER_EVENTS.exchange, type: 'fanout' }],
+			queue: PRODUCT_EVENTS.queue,
+			durable: true,
+		},
+		{
+			exchanges: [
+				{
+					exchange: ORDER_EVENTS.exchange,
+					type: 'fanout',
+					durable: true,
+				},
+			],
 			queueBindings: [
 				{
 					exchange: ORDER_EVENTS.exchange,

@@ -8,7 +8,9 @@ export async function rabbitMqInit() {
 	rabbitMQService.connection.on('connection', () => {
 		// Create publisher
 		rabbitMQService.createPublisher({
-			exchanges: [{ exchange: ORDER_EVENTS.name, type: 'fanout' }],
+			exchanges: [
+				{ exchange: ORDER_EVENTS.name, type: 'fanout', durable: true },
+			],
 		});
 	});
 	// Subscribe to different queues from this service

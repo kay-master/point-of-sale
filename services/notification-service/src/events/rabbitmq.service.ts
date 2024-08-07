@@ -19,10 +19,18 @@ export async function rabbitMqInit() {
 	// Subscribe to different queues from this service
 
 	rabbitMQService.subscribe(
-		ORDER_EVENTS.exchange,
-		NOTIFICATION_EVENTS.queue,
 		{
-			exchanges: [{ exchange: ORDER_EVENTS.exchange, type: 'fanout' }],
+			queue: NOTIFICATION_EVENTS.queue,
+			durable: true,
+		},
+		{
+			exchanges: [
+				{
+					exchange: ORDER_EVENTS.exchange,
+					type: 'fanout',
+					durable: true,
+				},
+			],
 			queueBindings: [
 				{
 					exchange: ORDER_EVENTS.exchange,
@@ -34,10 +42,18 @@ export async function rabbitMqInit() {
 	);
 
 	rabbitMQService.subscribe(
-		PRODUCT_EVENTS.exchange,
-		NOTIFICATION_EVENTS.queue,
 		{
-			exchanges: [{ exchange: PRODUCT_EVENTS.exchange, type: 'fanout' }],
+			queue: NOTIFICATION_EVENTS.queue,
+			durable: true,
+		},
+		{
+			exchanges: [
+				{
+					exchange: PRODUCT_EVENTS.exchange,
+					type: 'fanout',
+					durable: true,
+				},
+			],
 			queueBindings: [
 				{
 					exchange: PRODUCT_EVENTS.exchange,

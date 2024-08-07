@@ -42,6 +42,8 @@ class RabbitMQService {
 				password: process.env.RABBITMQ_PASSWORD,
 				hostname: process.env.RABBITMQ_HOST,
 				port: parseInt(process.env.RABBITMQ_PORT || "5672"),
+				acquireTimeout: 50000,
+				connectionTimeout: 50000,
 			});
 
 			this.connection.on("error", (err: any) => {
@@ -97,9 +99,38 @@ class RabbitMQService {
 		}
 	}
 
-	async subscribe(
-		exchangeName: string,
+	async declareExchange(exchanges: ConsumerProps["exchanges"]) {
+		if (!exchanges) return;
+
+		for (const exchange of exchanges) {
+			await this.connection.exchangeDeclare({
+				exchange: exchange.exchange,
+				type: exchange.type,
+				durable: exchange.durable,
+			});
+		}
+	}
+
+	async queuesBind(
 		queueName: string,
+		queueBindings: ConsumerProps["queueBindings"],
+	) {
+		if (!queueBindings) return;
+
+		for (const binding of queueBindings) {
+			await this.connection.queueBind({
+				queue: queueName,
+				exchange: binding.exchange,
+				routingKey: binding.routingKey,
+			});
+		}
+	}
+
+	async subscribe(
+		queueInfo: {
+			queue: string;
+			durable?: boolean;
+		},
 		consumerProps: Omit<ConsumerProps, "queue" | "queueOptions" | "qos">,
 		callback: (message: MessageData) => Promise<ConsumerStatus | void>,
 	) {
@@ -107,19 +138,18 @@ class RabbitMQService {
 			await this.connect();
 		}
 
-		// Declare the queue first
-		await this.connection.queueDeclare({ queue: queueName, durable: true });
+		await this.declareExchange(consumerProps.exchanges);
 
-		// Bind the queue to the exchange
-		await this.connection.queueBind({
-			queue: queueName,
-			exchange: exchangeName,
-		});
+		// Declare the queue first
+		await this.connection.queueDeclare(queueInfo);
+
+		// Bind the queue to the exchanges
+		await this.queuesBind(queueInfo.queue, consumerProps.queueBindings);
 
 		this.consumer = this.connection.createConsumer(
 			{
-				queue: queueName,
-				queueOptions: { durable: true },
+				queue: queueInfo.queue,
+				queueOptions: { durable: queueInfo.durable },
 				qos: { prefetchCount: 2 },
 				...consumerProps,
 			},
@@ -132,7 +162,7 @@ class RabbitMQService {
 		);
 
 		this.consumer.on("error", (err: any) => {
-			console.log(`Consumer error (${queueName})`, err);
+			console.log(`Consumer error (${queueInfo.queue})`, err);
 		});
 	}
 

@@ -147,13 +147,21 @@ To shut down the servers simply run:
 %: ./scripts/runDocker.sh dev down
 ```
 
+### UI Dashboards
+
+- Access Consul Dashboard via http://localhost:8500/
+- Access MySQL UI via [phpmyadmin](http://localhost:8001/)
+- RabbitMQ UI via http://localhost:15672/
+  - Username = `guest`
+  - Password = `guest`
+
 ## Environment Configuration
 
 Each service requires an environment configuration file (.env). An example configuration is provided in .env.example files in each service directory. However, creation of this is automated with the `./startUp.sh` script.
 
 ## API Documentation
 
-API documentation is provided as a Postman collection. You can find the collection here: `./docs/Point-of-Sale.postman_collection.json`.
+API documentation is provided as a Postman collection. You can find the collection here: `./docs/Point-of-Sale.postman_collection.json` exported as Collection v2.1
 
 ### Postman Collection
 

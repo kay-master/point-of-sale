@@ -37,13 +37,13 @@ class ApiService {
 			});
 
 			this.axiosInstances[service]?.interceptors.request.use((config) => {
-				const serviceToken = process.env.SERVICE_COMMUNICATION_TOKEN;
+				// const serviceToken = process.env.SERVICE_COMMUNICATION_TOKEN;
 
-				if (!serviceToken) {
-					throw new Error("Service communication token not found!");
-				}
+				// if (!serviceToken) {
+				// 	throw new Error("Service communication token not found!");
+				// }
 
-				config.headers["service-token"] = `ISC ${serviceToken}`;
+				// config.headers["service-token"] = `ISC ${serviceToken}`;
 
 				return config;
 			});

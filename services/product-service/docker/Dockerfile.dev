@@ -23,4 +23,4 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 EXPOSE 4004
 
 # Command to run the service in development mode
-CMD ["pnpm", "nx", "dev", "@pos/notification"]
+CMD ["pnpm", "nx", "dev", "@pos/products"]

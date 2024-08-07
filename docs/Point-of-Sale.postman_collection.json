@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "ceaa3563-4ee5-42a4-a39a-f63533195fb6",
 		"name": "Point-of-Sale",
-		"description": "API endpoint collection for POS",
+		"description": "API endpoint collection for POS\n\nThis API requires users to be authenticated to do some actions, for the following endpoints No Auth is required:\n\n- {{baseUrl}}/products/list\n    \n- {{baseUrl}}/products/list/upsell-products\n    \n\n# Authentication\n\nPlease create an account first using endpoint at Auth->Register, after that please signin with your credentials to obtain a Auth Token. SignIn endpoint Auth->Sign In. Postman will automatically save the auth token to the collection variables.\n\nWe can assume there are two type of users that would use the API:\n\n1. Product owner, the user that can\n    \n    1. create, edit, delete products\n        \n    2. create upsells product\n        \n2. Consumer, the user that will be:\n    \n    1. fetching products\n        \n    2. product with upsell products\n        \n    3. making an order, fetching order details\n        \n\nNote that both these type of user's will be required to authenticate.  \n  \nIf unauthenticated user tries to make a request to an endpoint that requires authentication will receive Unauthenticated access (401) response.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "6189015"
 	},
@@ -62,10 +62,9 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost/auth/register",
-							"protocol": "http",
+							"raw": "{{baseUrl}}/auth/register",
 							"host": [
-								"localhost"
+								"{{baseUrl}}"
 							],
 							"path": [
 								"auth",
@@ -180,7 +179,7 @@
 									"",
 									"// Save the token for other tests",
 									"pm.test(\"Save token for other tests\", function () {",
-									"    pm.environment.set(\"token\", pm.response.json().data.token);",
+									"    pm.collectionVariables.set(\"token\", pm.response.json().data.token);",
 									"});",
 									""
 								],
@@ -194,7 +193,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"survey2@gmail.com\",\n    \"password\": \"123456\"\n}",
+							"raw": "{\n    \"email\": \"kuhle@gmail.com\",\n    \"password\": \"123456\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
