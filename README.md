@@ -159,7 +159,7 @@ API documentation is provided as a Postman collection. You can find the collecti
 
 ### Running tests
 
-To run tests for all services: `pnpm run test:all`
+To run tests for all services: `npm run test` or `npm run test:all`
 
 But in case you want to run individually:
 

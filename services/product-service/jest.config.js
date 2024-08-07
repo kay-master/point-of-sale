@@ -3,6 +3,7 @@ module.exports = {
 	clearMocks: true,
 	coverageProvider: 'v8',
 	testEnvironment: 'node',
+	maxConcurrency: 1,
 	roots: ['<rootDir>/tests'],
 	testMatch: ['<rootDir>/tests/**/*.test.ts'],
 	setupFilesAfterEnv: ['<rootDir>/tests/jest.setup.ts'],

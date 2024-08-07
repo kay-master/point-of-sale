@@ -6,6 +6,8 @@ const env = process.env.NODE_ENV || 'development';
 // @ts-ignore
 const configs = dbConfig[env];
 
+console.log('configs', configs);
+
 const DB = new Sequelize({
 	...configs,
 	models: [__dirname + '/models/**/*.model.ts'],

@@ -1,14 +1,24 @@
 import sequelize from '../src/db';
-import sinon from 'sinon';
+
+// Set Jest timeout to 30 seconds
+jest.setTimeout(30000);
 
 beforeAll(async () => {
-	await sequelize.sync({ force: true });
-});
-
-beforeEach(() => {
-	sinon.restore();
+	try {
+		await sequelize.authenticate();
+		await sequelize.sync({ force: true });
+		console.log('Database connection established and synced');
+	} catch (error) {
+		console.error('Unable to connect to the database:', error);
+		process.exit(1);
+	}
 });
 
 afterAll(async () => {
-	await sequelize.close();
+	try {
+		await sequelize.close();
+		console.log('Database connection closed');
+	} catch (error) {
+		console.error('Unable to close the database connection:', error);
+	}
 });
