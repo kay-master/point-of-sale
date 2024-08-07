@@ -20,6 +20,19 @@ services:
       - PMA_USER=root
       - PMA_PASSWORD=pos-password
 
+  mysql-test:
+    image: mysql:8.0
+    container_name: mysql-test
+    environment:
+      MYSQL_ROOT_PASSWORD: test-password
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: test-user
+      MYSQL_PASSWORD: test-password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-test:/var/lib/mysql
+
   mysql-admin:
     restart: always
     image: phpmyadmin/phpmyadmin
@@ -103,6 +116,7 @@ services:
 volumes:
   mysql:
     driver: local
+  mysql-test:
 
 networks:
   mysqlnetwork:

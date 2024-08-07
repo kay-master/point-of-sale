@@ -8,3 +8,7 @@ beforeAll(async () => {
 beforeEach(() => {
 	sinon.restore();
 });
+
+afterAll(async () => {
+	await sequelize.close();
+});

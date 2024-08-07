@@ -6,9 +6,14 @@
   "scripts": {
     "build:libs": "nx run-many --target=build --projects='@libs/*' --parallel",
     "watch:libs": "nx run-many --target=build --projects='@libs/*' --parallel --watch",
-    "migrate:services": "pnpm --filter './services/**' run sq-cli db:migrate",
-    "seed:services": "pnpm --filter './services/**' run sq-cli db:seed:all",
-    "test": "cross-env NODE_ENV=test & nx run-many --projects='@pos/*' -t test --parallel"
+    "migrate:undo": "pnpm --filter './services/**' --filter=!./services/notification-service run sq-cli db:migrate:undo:all",
+    "migrate:services": "npm run migrate:undo && pnpm --filter './services/**' --filter=!./services/notification-service run sq-cli db:migrate",
+    "seed:services": "pnpm --filter './services/**' --filter=!./services/notification-service run sq-cli db:seed:all",
+    "test": "cross-env NODE_ENV=test & pnpm --filter='@pos/*' run test",
+    "test:auth": "cd services/auth-service/ && npm run test",
+    "test:order": "cd services/orders-service/ && npm run test",
+    "test:product": "cd services/product-service/ && npm run test",
+    "test:all": "npm run test:auth & npm run test:order & npm run test:product"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,2138 @@
+{
+	"info": {
+		"_postman_id": "ceaa3563-4ee5-42a4-a39a-f63533195fb6",
+		"name": "Point-of-Sale",
+		"description": "API endpoint collection for POS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6189015"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test to check if the response is successful and matches the expected object",
+									"pm.test(\"Response is successful and matches the expected object\", function () {",
+									"  var expectedObject = {",
+									"    success: true,",
+									"    message: \"User registered successfully\",",
+									"    data: {",
+									"      firstName: \"Asus\",",
+									"      lastName: \"Doe\",",
+									"      email: \"survey2@gmail.com\",",
+									"      createdAt: \"2024-07-28T23:47:05.192Z\"",
+									"    }",
+									"  };",
+									"  ",
+									"  pm.expect(pm.response.json()).to.eql(expectedObject);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Asus\",\n    \"lastName\": \"Doe\",\n    \"email\": \"kuhle@gmail.com\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "This returns a `token` that you can use to retrieve information later on.\n\nWe have included a test to confirm if a token is returned. We have also added test scripts to copy the token to the `token` collection variable. This makes it easy for us to reuse this token in other requests in the collection."
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\": \"Asus\",\n    \"lastName\": \"Doe\",\n    \"email\": \"survey@gmail.com\",\n    \"password\": \"123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"User registered successfully\",\n    \"data\": {\n        \"firstName\": \"Asus\",\n        \"lastName\": \"Doe\",\n        \"email\": \"survey2@gmail.com\",\n        \"createdAt\": \"2024-07-28T23:47:05.192Z\"\n    }\n}"
+						},
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\": \"Asus\",\n    \"lastName\": \"Doe\",\n    \"email\": \"survey@gmail.com\",\n    \"password\": \"123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/register",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Email already in use\",\n    \"errors\": {\n        \"code\": \"email_already_in_use\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Sign In",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test to check if the response is successful",
+									"pm.test(\"Response is successful\", function () {",
+									"    pm.expect(pm.response.json().success).to.be.true;",
+									"});",
+									"",
+									"// Save the token for other tests",
+									"pm.test(\"Save token for other tests\", function () {",
+									"    pm.environment.set(\"token\", pm.response.json().data.token);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"survey2@gmail.com\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"survey2@gmail.com\",\n    \"password\": \"123578r\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Invalid credentials\"\n}"
+						},
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"survey2@gmail.com\",\n    \"password\": \"123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"User logged in successfully\",\n    \"data\": {\n        \"account\": {\n            \"firstName\": \"Asus\",\n            \"lastName\": \"Doe\",\n            \"email\": \"survey2@gmail.com\",\n            \"createdAt\": \"2024-07-28T23:47:05.000Z\"\n        },\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjQsImlhdCI6MTcyMjIxMjEyMSwiZXhwIjoxNzIzMDc2MTIxfQ.QcpBEiJ92JWD9Cmaz4C-Xj7T1e0WjGtHpAbv5HKpEeM\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "JWT Verification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/verify-token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"verify-token"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"survey2@gmail.com\",\n    \"password\": \"123578r\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Invalid credentials\"\n}"
+						},
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"survey2@gmail.com\",\n    \"password\": \"123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"User logged in successfully\",\n    \"data\": {\n        \"account\": {\n            \"firstName\": \"Asus\",\n            \"lastName\": \"Doe\",\n            \"email\": \"survey2@gmail.com\",\n            \"createdAt\": \"2024-07-28T23:47:05.000Z\"\n        },\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjQsImlhdCI6MTcyMjIxMjEyMSwiZXhwIjoxNzIzMDc2MTIxfQ.QcpBEiJ92JWD9Cmaz4C-Xj7T1e0WjGtHpAbv5HKpEeM\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/list?products=[4,5]",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"list"
+							],
+							"query": [
+								{
+									"key": "products",
+									"value": "[4,5]"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/products/list",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"products",
+										"list"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Products retrieved successfully\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Product 1\",\n            \"price\": 10,\n            \"quantity\": 2,\n            \"description\": \"Description for product 1\",\n            \"createdAt\": \"2024-07-30T09:20:37.000Z\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Eggs\",\n            \"price\": 15.23,\n            \"quantity\": 1,\n            \"description\": \"Large 60s eggs\",\n            \"createdAt\": \"2024-07-30T09:54:21.000Z\"\n        },\n        {\n            \"id\": 6,\n            \"name\": \"Toilet paper\",\n            \"price\": 19.5,\n            \"quantity\": 1,\n            \"description\": \"Whole bread\",\n            \"createdAt\": \"2024-07-30T10:00:34.000Z\"\n        },\n        {\n            \"id\": 7,\n            \"name\": \"Brown bread\",\n            \"price\": 19.5,\n            \"quantity\": 1,\n            \"description\": \"Whole bread\",\n            \"createdAt\": \"2024-07-30T10:01:45.000Z\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Fetch Specific products",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/products/list?products=[4,5]",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										"list"
+									],
+									"query": [
+										{
+											"key": "products",
+											"value": "[4,5]"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Products retrieved successfully\",\n    \"data\": [\n        {\n            \"productId\": 4,\n            \"name\": \"Rice\",\n            \"sku\": \"SKU-RIC-05032\",\n            \"price\": 190.5,\n            \"quantity\": 50,\n            \"description\": \"10Kg rice\",\n            \"createdAt\": \"2024-07-30T23:20:05.000Z\"\n        },\n        {\n            \"productId\": 5,\n            \"name\": \"Pilchard\",\n            \"sku\": \"SKU-PIL-52178\",\n            \"price\": 10.99,\n            \"quantity\": 10,\n            \"description\": \"500ml can of fresh Pilchard\",\n            \"createdAt\": \"2024-07-31T14:50:52.000Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"2L Coke\",\n    \"price\": 26.99,\n    \"description\": \"2l Coke\",\n    \"quantity\": 45\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjMsImlhdCI6MTcyMjc5MTY2NiwiZXhwIjoxNzIzNjU1NjY2fQ.JNCbd_5FdpaGmuDWt1LuwA40RliuDKj5a7ssgok2pDcATm-dNA6rgPJ553Z4gdSnua-poBc9Q5Q2yvKFm31o3ls66kSFW1jILjlTwjuO6TdyMkL1X8eurOd0pDzo03i_O6qyX82RotYTFjoSKk1113PwyhkCEFN-f-GyrA-Dwsu52pLVmj_YU1rOu32rikeR6y2EONtr3UOCf_z0W3iRsbhXgbpye77dKKTNbdVDZ1k9NuMtkANovRXefnRPrJF-oIzGXysTQ93IG1Dg_D0Ixcq-PiyhSxJAMbIZ_P3vjrZOh0nDUr2HciyD_pHIilHTgsCgNaCez6a8yMQiLVeq4g",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Brown bread\",\n    \"price\": 19.50,\n    \"description\": \"Whole bread\",\n    \"quantity\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/products/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Product created successfully\",\n    \"data\": {\n        \"id\": 7,\n        \"name\": \"Brown bread\",\n        \"price\": 19.5,\n        \"quantity\": 2,\n        \"description\": \"Whole bread\",\n        \"createdAt\": \"2024-07-30T10:01:45.896Z\"\n    }\n}"
+						},
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Eggs\",\n    \"price\": 15.23,\n    \"description\": \"Large 60s eggs\",\n    \"quantity\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/products/",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Product already exists\",\n    \"errors\": null\n}"
+						},
+						{
+							"name": "Unprocessable entity",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Eggs\",\n    \"description\": \"Large 60s eggs\",\n    \"quantity\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/products/",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										""
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Invalid request data. Please review your request and try again\",\n    \"errors\": {\n        \"issues\": [\n            {\n                \"code\": \"invalid_type\",\n                \"expected\": \"number\",\n                \"received\": \"undefined\",\n                \"path\": [\n                    \"price\"\n                ],\n                \"message\": \"Required\"\n            }\n        ],\n        \"name\": \"ZodError\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Stores the id from the response data in a variable",
+									"var productId = pm.response.json().data.id;",
+									"pm.globals.set(\"productId\", productId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"5kg Polony\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/6",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"6"
+							]
+						},
+						"description": "This endpoint allows you to update a specific product using an HTTP PUT request to {{baseUrl}}/6.\n\n### Request Body\n\nThe request should include a JSON payload in the raw request body type with the following parameters:\n\n- `name` (string): The name of the product.\n    \n- `price` (number): The price of the product.\n    \n- `description` (string): The description of the product.\n    \n- `quantity` (number): The quantity of the product.\n    \n\n### Response\n\nThe response will be in JSON format with the following schema:\n\n``` json\n{\n    \"success\": true,\n    \"message\": \"Product updated successfully\",\n    \"data\": {\n        \"id\": 6,\n        \"name\": \"Toilet paper\",\n        \"price\": 19.5,\n        \"quantity\": 1,\n        \"description\": \"Whole bread\",\n        \"createdAt\": \"2024-07-30T10:00:34.000Z\"\n    }\n}\n\n ```"
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjMsImlhdCI6MTcyMjc5MTY2NiwiZXhwIjoxNzIzNjU1NjY2fQ.JNCbd_5FdpaGmuDWt1LuwA40RliuDKj5a7ssgok2pDcATm-dNA6rgPJ553Z4gdSnua-poBc9Q5Q2yvKFm31o3ls66kSFW1jILjlTwjuO6TdyMkL1X8eurOd0pDzo03i_O6qyX82RotYTFjoSKk1113PwyhkCEFN-f-GyrA-Dwsu52pLVmj_YU1rOu32rikeR6y2EONtr3UOCf_z0W3iRsbhXgbpye77dKKTNbdVDZ1k9NuMtkANovRXefnRPrJF-oIzGXysTQ93IG1Dg_D0Ixcq-PiyhSxJAMbIZ_P3vjrZOh0nDUr2HciyD_pHIilHTgsCgNaCez6a8yMQiLVeq4g",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Toilet paper\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/products/6",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"products",
+										"6"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Product updated successfully\",\n    \"data\": {\n        \"id\": 6,\n        \"name\": \"Toilet paper\",\n        \"price\": 19.5,\n        \"quantity\": 1,\n        \"description\": \"Whole bread\",\n        \"createdAt\": \"2024-07-30T10:00:34.000Z\"\n    }\n}"
+						},
+						{
+							"name": "Malformed Request",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"productName\": \"Toilet paper\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/products/6",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										"6"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"At least one field must be provided\",\n    \"errors\": {\n        \"fields\": [\n            \"name\",\n            \"price\",\n            \"description\",\n            \"quantity\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Stores the id from the response data in a variable",
+									"var productId = pm.response.json().data.productId;",
+									"pm.globals.set(\"productId\", productId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"4"
+							]
+						},
+						"description": "This endpoint allows you to update a specific product using an HTTP PUT request to {{baseUrl}}/6.\n\n### Request Body\n\nThe request should include a JSON payload in the raw request body type with the following parameters:\n\n- `name` (string): The name of the product.\n    \n- `price` (number): The price of the product.\n    \n- `description` (string): The description of the product.\n    \n- `quantity` (number): The quantity of the product.\n    \n\n### Response\n\nThe response will be in JSON format with the following schema:\n\n``` json\n{\n    \"success\": true,\n    \"message\": \"Product updated successfully\",\n    \"data\": {\n        \"id\": 6,\n        \"name\": \"Toilet paper\",\n        \"price\": 19.5,\n        \"quantity\": 1,\n        \"description\": \"Whole bread\",\n        \"createdAt\": \"2024-07-30T10:00:34.000Z\"\n    }\n}\n\n ```"
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjMsImlhdCI6MTcyMjc5MTY2NiwiZXhwIjoxNzIzNjU1NjY2fQ.JNCbd_5FdpaGmuDWt1LuwA40RliuDKj5a7ssgok2pDcATm-dNA6rgPJ553Z4gdSnua-poBc9Q5Q2yvKFm31o3ls66kSFW1jILjlTwjuO6TdyMkL1X8eurOd0pDzo03i_O6qyX82RotYTFjoSKk1113PwyhkCEFN-f-GyrA-Dwsu52pLVmj_YU1rOu32rikeR6y2EONtr3UOCf_z0W3iRsbhXgbpye77dKKTNbdVDZ1k9NuMtkANovRXefnRPrJF-oIzGXysTQ93IG1Dg_D0Ixcq-PiyhSxJAMbIZ_P3vjrZOh0nDUr2HciyD_pHIilHTgsCgNaCez6a8yMQiLVeq4g",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost/products/8",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"products",
+										"8"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Product deleted successfully\",\n    \"data\": {\n        \"id\": 8,\n        \"name\": \"Samsung\",\n        \"price\": 19.5,\n        \"quantity\": 1,\n        \"description\": \"Monitor\",\n        \"createdAt\": \"2024-07-30T18:46:41.000Z\",\n        \"updatedAt\": \"2024-07-30T18:46:41.000Z\"\n    }\n}"
+						},
+						{
+							"name": "Product not found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/products/8",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										"8"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Product not found\",\n    \"errors\": null\n}"
+						},
+						{
+							"name": "Unprocessable Entity",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/products/8",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										"8"
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Product has upsell products, delete upsell products first\",\n    \"errors\": {\n        \"upsellProducts\": [\n            5\n        ]\n    }\n}"
+						}
+					]
+				}
+			],
+			"description": "Products can only be managed by authenticated users, such a user has the ability to:\n\n1. Create products which will be linked to their account\n    \n2. Updates their products\n    \n3. Delete their products\n    \n\nHowever, any user is able to retrieve all products (**GET**) for them to purchase."
+		},
+		{
+			"name": "Upsell",
+			"item": [
+				{
+					"name": "All Upsell Products",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/list/upsell-products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"list",
+								"upsell-products"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/products/list/upsell-products",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"products",
+										"list",
+										"upsell-products"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Upsell products\",\n    \"data\": [\n        {\n            \"upsellId\": 10,\n            \"productId\": 6,\n            \"upsellProductId\": 5,\n            \"createdAt\": \"2024-08-05T20:20:13.000Z\",\n            \"product\": {\n                \"productId\": 6,\n                \"name\": \"5kg Polony\",\n                \"sku\": \"SKU-5KG-89588\",\n                \"userId\": 3,\n                \"price\": 9.99,\n                \"quantity\": 100,\n                \"description\": \"5kg chicken Polony\",\n                \"createdAt\": \"2024-08-04T18:08:09.000Z\",\n                \"updatedAt\": \"2024-08-04T18:08:09.000Z\"\n            },\n            \"upsellProductDetail\": {\n                \"productId\": 5,\n                \"name\": \"Brown Bread\",\n                \"sku\": \"SKU-BRO-50165\",\n                \"userId\": 3,\n                \"price\": 10.99,\n                \"quantity\": 50,\n                \"description\": \"Whole brown bread\",\n                \"createdAt\": \"2024-08-04T18:07:30.000Z\",\n                \"updatedAt\": \"2024-08-04T18:07:30.000Z\"\n            }\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Upsell Products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/list/upsell?productId=6",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"list",
+								"upsell"
+							],
+							"query": [
+								{
+									"key": "productId",
+									"value": "6",
+									"description": "Id of product that has upsells"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/products/list/upsell?productId=7",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"products",
+										"list",
+										"upsell"
+									],
+									"query": [
+										{
+											"key": "productId",
+											"value": "7",
+											"description": "Id of product that has upsells"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Upsell products retrieved successfully\",\n    \"data\": [\n        {\n            \"upsellId\": 10,\n            \"productId\": 6,\n            \"upsellProductId\": 5,\n            \"createdAt\": \"2024-08-05T20:20:13.000Z\",\n            \"product\": {\n                \"productId\": 6,\n                \"name\": \"5kg Polony\",\n                \"sku\": \"SKU-5KG-89588\",\n                \"userId\": 3,\n                \"price\": 9.99,\n                \"quantity\": 100,\n                \"description\": \"5kg chicken Polony\",\n                \"createdAt\": \"2024-08-04T18:08:09.000Z\",\n                \"updatedAt\": \"2024-08-04T18:08:09.000Z\"\n            },\n            \"upsellProductDetail\": {\n                \"productId\": 5,\n                \"name\": \"Brown Bread\",\n                \"sku\": \"SKU-BRO-50165\",\n                \"userId\": 3,\n                \"price\": 10.99,\n                \"quantity\": 50,\n                \"description\": \"Whole brown bread\",\n                \"createdAt\": \"2024-08-04T18:07:30.000Z\",\n                \"updatedAt\": \"2024-08-04T18:07:30.000Z\"\n            }\n        }\n    ]\n}"
+						},
+						{
+							"name": "Product not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/products/list/upsell?productId=4",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										"list",
+										"upsell"
+									],
+									"query": [
+										{
+											"key": "productId",
+											"value": "4",
+											"description": "Id of product that has upsells"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Product(s) not found\",\n    \"errors\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Upsell",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productId\": 6,\n    \"upsellProductId\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/upsell",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"upsell"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjMsImlhdCI6MTcyMjc5MTY2NiwiZXhwIjoxNzIzNjU1NjY2fQ.JNCbd_5FdpaGmuDWt1LuwA40RliuDKj5a7ssgok2pDcATm-dNA6rgPJ553Z4gdSnua-poBc9Q5Q2yvKFm31o3ls66kSFW1jILjlTwjuO6TdyMkL1X8eurOd0pDzo03i_O6qyX82RotYTFjoSKk1113PwyhkCEFN-f-GyrA-Dwsu52pLVmj_YU1rOu32rikeR6y2EONtr3UOCf_z0W3iRsbhXgbpye77dKKTNbdVDZ1k9NuMtkANovRXefnRPrJF-oIzGXysTQ93IG1Dg_D0Ixcq-PiyhSxJAMbIZ_P3vjrZOh0nDUr2HciyD_pHIilHTgsCgNaCez6a8yMQiLVeq4g",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"productId\": 7,\n    \"upsellProductId\": 6\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/products/upsell",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"products",
+										"upsell"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Upsell product created successfully\",\n    \"data\": {\n        \"success\": true,\n        \"data\": {\n            \"upsellId\": 10,\n            \"productId\": 6,\n            \"upsellProductId\": 5,\n            \"createdAt\": \"2024-08-05T20:20:13.000Z\",\n            \"product\": {\n                \"productId\": 6,\n                \"name\": \"5kg Polony\",\n                \"sku\": \"SKU-5KG-89588\",\n                \"userId\": 3,\n                \"price\": 9.99,\n                \"quantity\": 100,\n                \"description\": \"5kg chicken Polony\",\n                \"createdAt\": \"2024-08-04T18:08:09.000Z\",\n                \"updatedAt\": \"2024-08-04T18:08:09.000Z\"\n            },\n            \"upsellProductDetail\": {\n                \"productId\": 5,\n                \"name\": \"Brown Bread\",\n                \"sku\": \"SKU-BRO-50165\",\n                \"userId\": 3,\n                \"price\": 10.99,\n                \"quantity\": 50,\n                \"description\": \"Whole brown bread\",\n                \"createdAt\": \"2024-08-04T18:07:30.000Z\",\n                \"updatedAt\": \"2024-08-04T18:07:30.000Z\"\n            }\n        }\n    }\n}"
+						},
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"productId\": 1,\n    \"upsellProductId\": 19\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/products/upsell",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										"upsell"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Product or Upsell Product does not exist\",\n    \"errors\": null\n}"
+						},
+						{
+							"name": "Unprocessable entity",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/products/upsell",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										"upsell"
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Invalid request data. Please review your request and try again\",\n    \"errors\": {\n        \"issues\": [\n            {\n                \"code\": \"invalid_type\",\n                \"expected\": \"number\",\n                \"received\": \"undefined\",\n                \"path\": [\n                    \"productId\"\n                ],\n                \"message\": \"Product Id is required\"\n            },\n            {\n                \"code\": \"invalid_type\",\n                \"expected\": \"number\",\n                \"received\": \"undefined\",\n                \"path\": [\n                    \"upsellProductId\"\n                ],\n                \"message\": \"Upsell Product Id is required\"\n            }\n        ],\n        \"name\": \"ZodError\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Remove upsell product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/upsell/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"upsell",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjMsImlhdCI6MTcyMjc5MTY2NiwiZXhwIjoxNzIzNjU1NjY2fQ.JNCbd_5FdpaGmuDWt1LuwA40RliuDKj5a7ssgok2pDcATm-dNA6rgPJ553Z4gdSnua-poBc9Q5Q2yvKFm31o3ls66kSFW1jILjlTwjuO6TdyMkL1X8eurOd0pDzo03i_O6qyX82RotYTFjoSKk1113PwyhkCEFN-f-GyrA-Dwsu52pLVmj_YU1rOu32rikeR6y2EONtr3UOCf_z0W3iRsbhXgbpye77dKKTNbdVDZ1k9NuMtkANovRXefnRPrJF-oIzGXysTQ93IG1Dg_D0Ixcq-PiyhSxJAMbIZ_P3vjrZOh0nDUr2HciyD_pHIilHTgsCgNaCez6a8yMQiLVeq4g",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost/products/upsell/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"products",
+										"upsell",
+										"5"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Not found response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/products/upsell/120",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										"upsell",
+										"120"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Upsell Product not found or user does not own the product\",\n    \"errors\": null\n}"
+						}
+					]
+				}
+			],
+			"description": "Only authenticated users can manage upsell of products, but any user can retrieve upsell products that are linked to a specific product as we would like to show users the upsell products"
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "All Orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4003/orders/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4003",
+							"path": [
+								"orders",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/orders/",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Order created successfully\"\n}"
+						},
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/orders/",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Products with the following IDs do not exist: 50\",\n    \"errors\": {\n        \"missingIds\": [\n            50\n        ]\n    }\n}"
+						},
+						{
+							"name": "Unprocessable entity",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/orders/",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										""
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Invalid request data. Please review your request and try again\",\n    \"errors\": {\n        \"issues\": [\n            {\n                \"code\": \"invalid_type\",\n                \"expected\": \"number\",\n                \"received\": \"undefined\",\n                \"path\": [\n                    \"items\",\n                    0,\n                    \"quantity\"\n                ],\n                \"message\": \"Required\"\n            }\n        ],\n        \"name\": \"ZodError\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Order Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/orders/14",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										"14"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Order specific details\",\n    \"data\": {\n        \"orderId\": 14,\n        \"userId\": 1,\n        \"totalAmount\": 223.47,\n        \"status\": \"pending\",\n        \"createdAt\": \"2024-07-31T16:32:01.000Z\",\n        \"updatedAt\": \"2024-07-31T16:32:01.000Z\",\n        \"details\": [\n            {\n                \"detailId\": 15,\n                \"orderId\": 14,\n                \"productId\": 4,\n                \"productName\": \"Rice\",\n                \"productPrice\": 190.5,\n                \"productDescription\": \"10Kg rice\",\n                \"productSKU\": \"SKU-RIC-05032\",\n                \"quantity\": 1,\n                \"totalPrice\": 190.5,\n                \"createdAt\": \"2024-07-31T16:32:01.000Z\",\n                \"updatedAt\": \"2024-07-31T16:32:01.000Z\"\n            },\n            {\n                \"detailId\": 16,\n                \"orderId\": 14,\n                \"productId\": 5,\n                \"productName\": \"Pilchard\",\n                \"productPrice\": 10.99,\n                \"productDescription\": \"500ml can of fresh Pilchard\",\n                \"productSKU\": \"SKU-PIL-52178\",\n                \"quantity\": 3,\n                \"totalPrice\": 32.97,\n                \"createdAt\": \"2024-07-31T16:32:01.000Z\",\n                \"updatedAt\": \"2024-07-31T16:32:01.000Z\"\n            }\n        ]\n    }\n}"
+						},
+						{
+							"name": "Order not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/orders/100",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										"100"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Order with ID 100 not found\",\n    \"errors\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"items\": [\n        {\n            \"productId\": 3,\n            \"quantity\": 2\n        }\n    ],\n    \"upsellItems\": [\n        \n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"items\": [\n        {\n            \"productId\": 4,\n            \"quantity\": 1\n        },\n        {\n            \"productId\": 5,\n            \"quantity\": 1\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/orders/",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Order created successfully\"\n}"
+						},
+						{
+							"name": "Order with upsell products",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"items\": [\n        {\n            \"productId\": 4,\n            \"quantity\": 1\n        },\n        {\n            \"productId\": 5,\n            \"quantity\": 1\n        }\n    ],\n    \"upsellItems\": [\n        {\n            \"quantity\": 2,\n            \"productId\": 4,\n            \"upsellProductId\": 5\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/orders/",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										""
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Order created successfully\"\n}"
+						},
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"items\": [\n        {\n            \"productId\": 4,\n            \"quantity\": 1\n        },\n        {\n            \"productId\": 50,\n            \"quantity\": 1\n        }\n    ],\n    \"upsellItems\": [\n        {\n            \"quantity\": 2,\n            \"productId\": 4,\n            \"upsellProductId\": 5\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/orders/",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Products with the following IDs do not exist: 50\",\n    \"errors\": {\n        \"missingIds\": [\n            50\n        ]\n    }\n}"
+						},
+						{
+							"name": "Unprocessable entity",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"items\": [\n        {\n            \"productId\": 4\n        },\n        {\n            \"productId\": 5,\n            \"quantity\": 1\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/orders/",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										""
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Invalid request data. Please review your request and try again\",\n    \"errors\": {\n        \"issues\": [\n            {\n                \"code\": \"invalid_type\",\n                \"expected\": \"number\",\n                \"received\": \"undefined\",\n                \"path\": [\n                    \"items\",\n                    0,\n                    \"quantity\"\n                ],\n                \"message\": \"Required\"\n            }\n        ],\n        \"name\": \"ZodError\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Order Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"processing\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders/16/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"16",
+								"status"
+							]
+						},
+						"description": "Update order status\n\nOptions:\n\n1. `pending`\n    \n2. `processing`\n    \n3. `complete`\n    \n4. `cancelled`"
+					},
+					"response": [
+						{
+							"name": "Successful response",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"processing\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/orders/1/status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										"1",
+										"status"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Order status updated successfully\",\n    \"data\": {\n        \"orderId\": 1,\n        \"status\": \"processing\",\n        \"totalAmount\": 100,\n        \"updatedAt\": \"2024-08-04T21:13:49.000Z\"\n    }\n}"
+						},
+						{
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"processing\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/orders/1/status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										"1",
+										"status"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Order with ID 2 not found\",\n    \"errors\": null\n}"
+						},
+						{
+							"name": "Unprocessable entity",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/orders/1/status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										"1",
+										"status"
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"Invalid request data. Please review your request and try again\",\n    \"errors\": {\n        \"issues\": [\n            {\n                \"received\": \"test\",\n                \"code\": \"invalid_enum_value\",\n                \"options\": [\n                    \"pending\",\n                    \"processing\",\n                    \"complete\",\n                    \"cancelled\"\n                ],\n                \"path\": [\n                    \"status\"\n                ],\n                \"message\": \"Invalid enum value. Expected 'pending' | 'processing' | 'complete' | 'cancelled', received 'test'\"\n            }\n        ],\n        \"name\": \"ZodError\"\n    }\n}"
+						}
+					]
+				}
+			],
+			"description": "Only **authentication users** can do the following:\n\n1. Retrieve all their orders\n    \n2. Retrieve details of a specific order\n    \n3. Ability to update order status \\[\\]\n    \n4. Create a new transaction (order)"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOjMsImlhdCI6MTcyMjc5MTY2NiwiZXhwIjoxNzIzNjU1NjY2fQ.JNCbd_5FdpaGmuDWt1LuwA40RliuDKj5a7ssgok2pDcATm-dNA6rgPJ553Z4gdSnua-poBc9Q5Q2yvKFm31o3ls66kSFW1jILjlTwjuO6TdyMkL1X8eurOd0pDzo03i_O6qyX82RotYTFjoSKk1113PwyhkCEFN-f-GyrA-Dwsu52pLVmj_YU1rOu32rikeR6y2EONtr3UOCf_z0W3iRsbhXgbpye77dKKTNbdVDZ1k9NuMtkANovRXefnRPrJF-oIzGXysTQ93IG1Dg_D0Ixcq-PiyhSxJAMbIZ_P3vjrZOh0nDUr2HciyD_pHIilHTgsCgNaCez6a8yMQiLVeq4g"
+		},
+		{
+			"key": "baseUrl",
+			"value": "http://localhost"
+		}
+	]
+}

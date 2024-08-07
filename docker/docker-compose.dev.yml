@@ -21,7 +21,7 @@ services:
     volumes:
       - ../services/auth-service:/usr/src/app/services/auth-service
       - ../libs:/usr/src/app/libs
-      - service-node-modules:/usr/src/app/node_modules
+      - service_node_modules:/usr/src/app/node_modules
 
   product-service:
     build:
@@ -43,7 +43,7 @@ services:
     volumes:
       - ../services/product-service:/usr/src/app/services/product-service
       - ../libs:/usr/src/app/libs
-      - service-node-modules:/usr/src/app/node_modules
+      - service_node_modules:/usr/src/app/node_modules
 
   orders-service:
     build:
@@ -65,7 +65,7 @@ services:
     volumes:
       - ../services/orders-service:/usr/src/app/services/orders-service
       - ../libs:/usr/src/app/libs
-      - service-node-modules:/usr/src/app/node_modules
+      - service_node_modules:/usr/src/app/node_modules
 
   notification-service:
     build:
@@ -86,13 +86,12 @@ services:
     volumes:
       - ../services/notification-service:/usr/src/app/services/notification-service
       - ../libs:/usr/src/app/libs
-      - service-node-modules:/usr/src/app/node_modules
+      - service_node_modules:/usr/src/app/node_modules
 
 volumes:
   mysql:
     driver: local
-  service-node-modules:
-    driver: local
+  service_node_modules:
 
 networks:
   mysqlnetwork:

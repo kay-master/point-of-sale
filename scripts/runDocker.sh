@@ -3,6 +3,7 @@
 # Function to display usage information
 usage() {
     echo "Usage: $0 {dev|prod} {up|down} [--build] [-d]"
+    echo "Example: $0 dev up --build -d"
     exit 1
 }
 
@@ -19,7 +20,7 @@ ACTION=$2
 shift 2
 
 # Define the base and environment-specific compose files
-BASE_COMPOSE_FILE="docker/docker-compose.yml"
+BASE_COMPOSE_FILE="docker/docker-compose.base.yml"
 ENV_COMPOSE_FILE="docker/docker-compose.$ENV.yml"
 
 # Ensure the environment-specific compose file exists

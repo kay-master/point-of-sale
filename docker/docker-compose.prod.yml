@@ -16,8 +16,15 @@ services:
       - consulnetwork
       - mysqlnetwork
 
+volumes:
+  mysql:
+    driver: local
+  service_node_modules:
+
 networks:
   mysqlnetwork:
     external: true
   consulnetwork:
+    external: true
+  rabbitmqnetwork:
     external: true
