@@ -38,6 +38,7 @@ Microservices architecture was chosen to meet the following requirements:
 - **Product Service**: Handles product-related operations like creation, update, and deletion.
 - **Order Service**: Manages orders, tracks order status, and updates product inventory.
 - **Notification Service**: Receives events from other services via RabbitMQ and handles notifications, for now its just receives events print them out.
+
   ![Notification Service](./docs/notifications.png)
 
 List of events being triggered (so far 😎):
