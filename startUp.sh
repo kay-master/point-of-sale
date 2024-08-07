@@ -109,3 +109,7 @@ run_database_with_retries
 generate_title 89
 echo -e "	🥳🎉 Setup completed successfully. You can now access the services. 🎉🥳"
 generate_title 89
+
+generate_title 30 "About to run tests in all services..."
+
+npm run test:all

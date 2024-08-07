@@ -7,12 +7,11 @@
 3. [Project Structure](#project-structure)
 4. [Installation and Setup](#installation-and-setup)
 5. [Running the Application](#running-the-application)
-6. [Available Scripts](#available-scripts)
-7. [Environment Configuration](#environment-configuration)
-8. [API Documentation](#api-documentation)
-9. [Testing](#testing)
-10. [Summary](#summary)
-11. [Last Notes](#last-notes)
+6. [Environment Configuration](#environment-configuration)
+7. [API Documentation](#api-documentation)
+8. [Testing](#testing)
+9. [Summary](#summary)
+10. [Last Notes](#last-notes)
 
 ## Introduction
 
@@ -127,14 +126,21 @@ To run the setup script:
 %: ./startUp.sh
 ```
 
-Incase for whatever reason `./startUp.sh` is not working all the way through, please run the following script first:
+## Running the Application
+
+Incase for whatever reason `./startUp.sh` is not working all the way through, please run the following script, this will boot up the servers:
+
+Make sure it's executable first:
 
 ```bash
 %: chmod +x ./scripts/runDocker.sh
+```
+
+```bash
 %: ./scripts/runDocker.sh dev up --build -d
 ```
 
-To shut down the server simply run:
+To shut down the servers simply run:
 
 ```bash
 %: ./scripts/runDocker.sh dev down
